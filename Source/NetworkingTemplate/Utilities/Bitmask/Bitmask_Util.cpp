@@ -33,9 +33,7 @@ bool UBitmask_Util::IsSet_Pure(int32 _bitmaskToCheck, int32 _bitsToCheckFor)
 
 }
 
-int32 UBitmask_Util::
-
-- (int32 _bitmaskToSet, int32 _bitsToAdd)
+int32 UBitmask_Util::Set_Pure(int32 _bitmaskToSet, int32 _bitsToAdd)
 {
 	int32 result = _bitmaskToSet | _bitsToAdd;
 
