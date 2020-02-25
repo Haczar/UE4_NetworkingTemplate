@@ -7,6 +7,8 @@ public class NetworkingTemplate : ModuleRules
 	public NetworkingTemplate(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
+
+		bEnableExceptions = true;
 	
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
 
@@ -28,17 +30,18 @@ public class NetworkingTemplate : ModuleRules
                     "UMG"               ,
 
 			     // Added
-			      //"AdvancedSessions"     ,
-                  //"AdvancedSteamSessions",
-                  //"VRExpansionPlugin"    ,
+			      "AdvancedSessions"     ,
+				  "AdvancedSteamSessions",
+				  //"VRExpansionPlugin"    ,
                   //"OpenVRExpansionPlugin",
 
 				 // Networking
 					"Networking"          ,
                     "OnlineSubsystem"     ,
+					"OnlineSubsystemNull" ,
                     "OnlineSubsystemUtils",
-                    "Sockets"             
-                //"Steamworks"
+                    "Sockets"             ,
+					"Steamworks"
                 }
             );
         }
@@ -75,10 +78,10 @@ public class NetworkingTemplate : ModuleRules
         }
 
 		// Uncomment if you are using Slate UI
-		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
+		//PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
 		
-		// Uncomment if you are using online features
-		// PrivateDependencyModuleNames.Add("OnlineSubsystem");
+		// Uncomment if you are using online features.
+		//PrivateDependencyModuleNames.AddRange(new string[] { "OnlineSubsystem" });
 
 		// To include OnlineSubsystemSteam, add it to the plugins section in your uproject file with the Enabled attribute set to true
 }
