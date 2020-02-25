@@ -8,7 +8,9 @@
 // Unreal Engine
 #include "Engine/Engine.h"
 #include "Engine/World.h"
-
+#include "GameFramework/Controller.h"
+#include "GameFramework/PlayerController.h"
+#include "Engine/Player.h"
 
 
 
@@ -33,6 +35,8 @@ void UNetSlime_ActorComponent::ServerAuthorized(UObject* _worldContextObject, EI
 
 	ENetRole netRoleInstance   = GetOwner()->GetLocalRole ();
 	ENetRole netRoleRemoteInst = GetOwner()->GetRemoteRole();
+
+	UE_LOG(LogTemp, Warning, TEXT("Role: %d"), netRoleRemoteInst);
 
 	switch (networkInstance)
 	{
@@ -96,11 +100,30 @@ void UNetSlime_ActorComponent::IsOwningClient(UObject* _worldContextObject, EIsR
 {
 	ENetMode networkInstance = _worldContextObject->GetWorld()->GetNetMode();
 
-	AActor* actorRef = GetOwner();
+	if (!GetOwner()->HasNetOwner())
+	{
+		UE_LOG(LogTemp, Error, TEXT("Must have net owner in order to determine if owning client."));
+	}
 
-	ENetRole netRoleInstance   = GetOwner()->GetLocalRole ();
-	ENetRole netRoleRemoteInst = GetOwner()->GetRemoteRole();
+	UWorld* worldRef = _worldContextObject->GetWorld();
 
+	AActor*            actorRef  = GetOwner()                                                     ;
+	APlayerController* playerRef = GetOwner()->GetNetOwningPlayer()->GetPlayerController(worldRef);
+
+	ENetRole netRoleInstance;
+	ENetRole netRoleRemoteInst;
+
+	if (playerRef != nullptr)
+	{
+		netRoleInstance   = playerRef->Role;
+		netRoleRemoteInst = playerRef->GetRemoteRole();
+	}
+	else
+	{
+		netRoleInstance   = actorRef->Role           ;
+		netRoleRemoteInst = actorRef->GetRemoteRole();
+	}
+	
 	switch (networkInstance)
 	{
 		case NM_Client:
@@ -122,19 +145,30 @@ void UNetSlime_ActorComponent::IsOwningClient(UObject* _worldContextObject, EIsR
 		{
 			if (netRoleInstance == ROLE_Authority)
 			{
+				if (netRoleRemoteInst != ROLE_AutonomousProxy)
+				{
+					//UE_LOG(LogTemp, Warning, TEXT("Owning client check passed for listen server..."));
+
+					_execRoute = EIsResult::Yes;
+				}
+				else
+				{
+					_execRoute = EIsResult::No;
+				}
+
 				#if UE_EDITOR == true
 					// Carlos: listenserver showed up with simulatedproxy role on my end (regardless of single process on/off)
 					// DO NOT USE SINGLE PROCESS WHILE TESTING SINGLE INSTANCE.
-					if (netRoleRemoteInst != ROLE_AutonomousProxy)
-					{
-						//UE_LOG(LogTemp, Warning, TEXT("Owning client check passed for listen server..."));
+					//if (netRoleRemoteInst != ROLE_AutonomousProxy)
+					//{
+					//	//UE_LOG(LogTemp, Warning, TEXT("Owning client check passed for listen server..."));
 
-						_execRoute = EIsResult::Yes; 
-					}
-					else
-					{
-						_execRoute = EIsResult::No;
-					}
+					//	_execRoute = EIsResult::Yes; 
+					//}
+					//else
+					//{
+					//	_execRoute = EIsResult::No;
+					//}
 
 				#endif
 
