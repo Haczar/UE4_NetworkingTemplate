@@ -50,17 +50,16 @@ public class NetworkingTemplate : ModuleRules
             (   
                 new string[]
                 {
-            //     "LaserPrototype"                                         ,
-            //     "LaserPrototype/Actors"                                  ,
-            //     "LaserPrototype/Actors/Pawns"                            ,
-            //     "LaserPrototype/Actors/Pawns/Characters"                 ,
+                 "NetworkingTemplate"                                         ,
+                 "NetworkingTemplate/Actors"                                  ,
+                 "NetworkingTemplate/Actors/Pawns"                            ,
+                 "NetworkingTemplate/Actors/Pawns/Characters"                 ,
                  "NetworkingTemplate/Framework"                               ,
                  "NetworkingTemplate/Networking"                              ,
                  "NetworkingTemplate/Networking/NetSlime"                     ,
-            //     "LaserPrototype/UserInterface"                           ,
+                 "NetworkingTemplate/UserInterface"                           ,
                  "NetworkingTemplate/Utilities"                                 ,
                  "NetworkingTemplate/Utilities/Bitmask"                         ,
-            //     "LaserPrototype/VirtualReality"
 
 			    // ... add public include paths required here ...
 		        }
