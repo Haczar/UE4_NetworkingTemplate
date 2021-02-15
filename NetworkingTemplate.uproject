@@ -27,6 +27,10 @@
 				"Mac",
 				"Linux"
 			]
+		},
+		{
+			"Name": "AdvancedSteamSessions",
+			"Enabled": true
 		}
 	]
 }
