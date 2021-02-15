@@ -107,20 +107,20 @@ void UNetSlime_ActorComponent::IsOwningClient(UObject* _worldContextObject, EIsR
 
 	UWorld* worldRef = _worldContextObject->GetWorld();
 
-	AActor*            actorRef  = GetOwner()                                                     ;
-	APlayerController* playerRef = GetOwner()->GetNetOwningPlayer()->GetPlayerController(worldRef);
+	const AActor*            actorRef  = GetOwner()                                                     ;
+	const APlayerController* playerRef = GetOwner()->GetNetOwningPlayer()->GetPlayerController(worldRef);
 
 	ENetRole netRoleInstance;
 	ENetRole netRoleRemoteInst;
 
 	if (playerRef != nullptr)
 	{
-		netRoleInstance   = playerRef->Role;
+		netRoleInstance   = playerRef->GetLocalRole ();
 		netRoleRemoteInst = playerRef->GetRemoteRole();
 	}
 	else
 	{
-		netRoleInstance   = actorRef->Role           ;
+		netRoleInstance   = actorRef->GetLocalRole() ;
 		netRoleRemoteInst = actorRef->GetRemoteRole();
 	}
 	

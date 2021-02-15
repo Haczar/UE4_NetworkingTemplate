@@ -6,10 +6,13 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "Online.h"
 #include "OnlineSubsystem.h"
+<<<<<<< local
+=======
 #if PLATFORM_WINDOWS || PLATFORM_MAC || PLATFORM_LINUX
 #include "steam/isteamugc.h"
 #include "steam/isteamremotestorage.h"
 #endif
+>>>>>>> graft
 #include "Interfaces/OnlineSessionInterface.h"
 
 // @todo Steam: Steam headers trigger secure-C-runtime warnings in Visual C++. Rather than mess with _CRT_SECURE_NO_WARNINGS, we'll just
@@ -83,7 +86,6 @@ public:
 UENUM(BlueprintType)
 enum class FBPSteamResult : uint8
 {
-	K_EResultInvalid = 0,
 	k_EResultOK = 1,							// success
 	k_EResultFail = 2,							// generic failure 
 	k_EResultNoConnection = 3,					// no/failed network connection
