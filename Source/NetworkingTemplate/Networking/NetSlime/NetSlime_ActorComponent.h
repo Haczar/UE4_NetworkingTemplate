@@ -26,6 +26,8 @@ public:
 	// Sets default values for this component's properties
 	UNetSlime_ActorComponent();
 
+	bool IsOwningClient_Pure();
+
 	// Has access to server RPCs. Does not care if your not the owner.
 	UFUNCTION(BlueprintCallable, Category = "Net Slime", Meta = (CallableWithoutWorldContext, ExpandEnumAsExecs = "ExecRoute", WorldContext = "WorldContextObject"))
 		void ServerAuthorized(UObject* WorldContextObject, EIsResult &ExecRoute);

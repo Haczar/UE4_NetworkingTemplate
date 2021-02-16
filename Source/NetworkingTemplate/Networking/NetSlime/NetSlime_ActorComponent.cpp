@@ -25,6 +25,115 @@ UNetSlime_ActorComponent::UNetSlime_ActorComponent()
 }
 
 
+bool UNetSlime_ActorComponent::IsOwningClient_Pure()
+{
+	ENetMode networkInstance = GetWorld()->GetNetMode();
+
+	if (!GetOwner()->HasNetOwner())
+	{
+		UE_LOG(LogTemp, Error, TEXT("Must have net owner in order to determine if owning client."));
+	}
+
+	UWorld* worldRef = GetWorld();
+
+	const AActor* actorRef = GetOwner();
+	const APlayerController* playerRef = GetOwner()->GetNetOwningPlayer()->GetPlayerController(worldRef);
+
+	ENetRole netRoleInstance;
+	ENetRole netRoleRemoteInst;
+
+	if (playerRef != nullptr)
+	{
+		netRoleInstance = playerRef->GetLocalRole ();
+		netRoleRemoteInst = playerRef->GetRemoteRole();
+	}
+	else
+	{
+		netRoleInstance = actorRef->GetLocalRole();
+		netRoleRemoteInst = actorRef->GetRemoteRole();
+	}
+
+	switch (networkInstance)
+	{
+		case NM_Client:
+		{
+			if (netRoleInstance == ROLE_AutonomousProxy)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		case NM_ListenServer:
+		{
+			if (netRoleInstance == ROLE_Authority)
+			{
+				if (netRoleRemoteInst != ROLE_AutonomousProxy)
+				{
+					//UE_LOG(LogTemp, Warning, TEXT("Owning client check passed for listen server..."));
+
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+
+			#if UE_EDITOR == true
+				// Carlos: listenserver showed up with simulatedproxy role on my end (regardless of single process on/off)
+				// DO NOT USE SINGLE PROCESS WHILE TESTING SINGLE INSTANCE.
+				//if (netRoleRemoteInst != ROLE_AutonomousProxy)
+				//{
+				//	//UE_LOG(LogTemp, Warning, TEXT("Owning client check passed for listen server..."));
+
+				//	_execRoute = EIsResult::Yes; 
+				//}
+				//else
+				//{
+				//	_execRoute = EIsResult::No;
+				//}
+
+			#endif
+
+				//On Oculus Quest its not equal, on editor its equal. TODO: (Note we don't know if its actually android or not...)
+			#if UE_GAME == true
+
+				if (netRoleRemoteInst != ROLE_AutonomousProxy)
+				{
+					//UE_LOG(LogTemp, Warning, TEXT("Owning client check passed for listen server..."));
+
+					_execRoute = EIsResult::Yes;
+				}
+				else
+				{
+					_execRoute = EIsResult::No;
+				}
+
+			#endif
+
+				return false;
+			}
+			else
+			{
+				//UE_LOG(LogTemp, Warning, TEXT("Owning client check failed for listen server..."));
+
+				return false;
+			}
+		}
+		case NM_Standalone:
+		{
+			return false;
+		}
+		default:
+		{
+			return false;
+		}
+	}
+}
+
+
 void UNetSlime_ActorComponent::ServerAuthorized(UObject* _worldContextObject, EIsResult &ExecRoute)
 {
 	ENetMode networkInstance = _worldContextObject->GetWorld()->GetNetMode();
