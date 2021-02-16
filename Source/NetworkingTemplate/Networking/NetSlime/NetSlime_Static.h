@@ -4,6 +4,8 @@
 
 // Includes
 
+#pragma once
+
 // Unreal
 #include "CoreMinimal.h"
 
@@ -12,7 +14,7 @@
 #include "Net/UnrealNetwork.h"
 #include "Net/RepLayout.h"
 
-// Phantom
+// NT
 #include "Utilities/UStatic_Util.h"
 
 // UE Header Tool
@@ -21,6 +23,19 @@
 
 
 // Enum
+
+UENUM(BlueprintType)
+enum class ENetScope : uint8
+{
+	Router,
+	Server,
+	ServerRPC,
+	Client,
+	ClientRPC,
+	ReroutingClientRPC,
+	Owner,
+	Local
+};
 
 UENUM(BlueprintType)
 enum class ENetworkSystemRole : uint8
