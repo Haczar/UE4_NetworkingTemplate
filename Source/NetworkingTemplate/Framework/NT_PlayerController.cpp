@@ -7,26 +7,36 @@
 #include "GameFramework/PlayerState.h"
 
 // NT
+
 #include "NT_GameInstance.h"
-#include "NetSlime/NetSlime_ActorComponent.h"
+
+
+
+
+
 
 
 // Public
 
+void ANT_PlayerController::K2_IsOwningClient(EIsResult& ExecRoute)
+{ 
+	if (IsOwningClient()) 
+	{ 
+		ExecRoute = EIsResult::Yes; 
+
+		return;
+	} 
+	else 
+	{ 
+		ExecRoute = EIsResult::No; 
+
+		return;
+	} 
+}
+
 ANT_PlayerController::ANT_PlayerController()
 {
 	PrimaryActorTick.bCanEverTick = true;
-
-	netSlime = CreateDefaultSubobject<UNetSlime_ActorComponent>(TEXT("NetSlime"));
-	
-
-}
-
-void ANT_PlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME(ANT_PlayerController, bOwningClient_FrameworkInitialized);
 }
 
 // Protected
@@ -35,9 +45,9 @@ void ANT_PlayerController::Local_OnFrameworkInitialized()
 {
 	UE_LOG(LogTemp, Log, TEXT("NT PlayerController: Received framework initialization."));
 
-	if (netSlime->IsOwningClient_Pure())
+	if (IsOwningClient())
 	{
-		if (GetWorld()->IsServer())
+		if (ServerSide())
 		{
 			Server_SetOwningClient_FrameworkInitialized();
 		}
@@ -50,13 +60,8 @@ void ANT_PlayerController::Local_OnFrameworkInitialized()
 	K2_Local_OnFrameworkInitialized();
 }
 
-
-// Private
-
 void ANT_PlayerController::Server_SetOwningClient_FrameworkInitialized()
 {
-	UE_LOG(LogTemp, Warning, TEXT("NT PlayerController: IT definitely happened...."));
-
 	bOwningClient_FrameworkInitialized = true;
 
 	On_OwningClient_PostLogin.Broadcast(this);
@@ -64,11 +69,12 @@ void ANT_PlayerController::Server_SetOwningClient_FrameworkInitialized()
 
 void ANT_PlayerController::ServerRPC_Reliable_NotifyFrameworkInit_OnOwningClient_Implementation()
 {
-	if (GetWorld()->IsServer())
+	if (ServerSide())
 	{
 		Server_SetOwningClient_FrameworkInitialized();
 	}
 }
+
 
 
 // APlayerController
@@ -89,7 +95,21 @@ bool ANT_PlayerController::CanRestartPlayer()
 
 
 
-// Protected
+// AController
+
+//void ANT_PlayerController::OnPossess(APawn* aPawn)
+//{
+//	if (UNetSlime_Static::K2_ServerSide(GetWorld()))
+//	{
+//
+//	}
+//}
+
+
+
+// AActor
+
+// Public
 
 void ANT_PlayerController::BeginPlay()
 {
@@ -104,3 +124,11 @@ void ANT_PlayerController::BeginPlay()
 	gInst->Local_NotifyComponentReady(EFramework_ComponentFlag::PlayerController);
 }
 
+void ANT_PlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ANT_PlayerController, bOwningClient_FrameworkInitialized);
+}
+
+//INetSlime_Generate_Implementation(ANT_PlayerController);

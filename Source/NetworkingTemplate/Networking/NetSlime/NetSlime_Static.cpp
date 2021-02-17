@@ -12,34 +12,108 @@
 
 
 
-EServerType UNetSlime_Static::ServerType_Pure(UObject* WorldContextObject)
+// Public
+
+bool UNetSlime_Static::ServerSide(UObject* _worldContext)
 {
-	UWorld* WorldRef = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::ReturnNull);
+	UWorld* WorldRef = GEngine->GetWorldFromContextObject(_worldContext, EGetWorldErrorMode::ReturnNull);
 
-	switch (WorldRef->GetNetMode())
+	if (WorldRef->IsServer() == true)
 	{
-	case ENetMode::NM_Standalone:
-	{
-		return EServerType::Standalone;
+		return true;
 	}
-	case ENetMode::NM_DedicatedServer:
+	else
 	{
-		return EServerType::DedicatedServer;
-	}
-	case ENetMode::NM_ListenServer:
-	{
-		return EServerType::ListenServer;
-	}
-
-	default:
-	{
-		return EServerType::NotServer;
-	}
-
+		return false;
 	}
 }
 
-void UNetSlime_Static::ServerSide(UObject* WorldContextObject, EContinue& ExecRoute)
+bool UNetSlime_Static::ClientSide(UObject* _worldContext)
+{
+	UWorld* WorldRef = GEngine->GetWorldFromContextObject(_worldContext, EGetWorldErrorMode::ReturnNull);
+
+	if (WorldRef->IsServer() == false)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+ENetworkSystemRole UNetSlime_Static::ServerOrClient(UObject* _worldContext)
+{
+	UWorld* WorldRef = GEngine->GetWorldFromContextObject(_worldContext, EGetWorldErrorMode::ReturnNull);
+
+	if (WorldRef->IsServer() == true)
+	{
+		return ENetworkSystemRole::Server;
+	}
+	else
+	{
+		return ENetworkSystemRole::Client;
+	}
+}
+
+EServerType UNetSlime_Static::ServerType(UObject* _worldContext)
+{
+	UWorld* WorldRef = GEngine->GetWorldFromContextObject(_worldContext, EGetWorldErrorMode::ReturnNull);
+
+	switch (WorldRef->GetNetMode())
+	{
+		case ENetMode::NM_Standalone:
+		{
+			return EServerType::Standalone;
+		}
+		case ENetMode::NM_DedicatedServer:
+		{
+			return EServerType::DedicatedServer;
+		}
+		case ENetMode::NM_ListenServer:
+		{
+			return EServerType::ListenServer;
+		}
+		default:
+		{
+			return EServerType::NotServer;
+		}
+	}
+}
+
+ENetworkMode UNetSlime_Static::NetworkMode(UObject* _worldContext)
+{
+	UWorld* WorldRef = GEngine->GetWorldFromContextObject(_worldContext, EGetWorldErrorMode::ReturnNull);
+
+	switch (WorldRef->GetNetMode())
+	{
+		case ENetMode::NM_Standalone:
+		{
+			return ENetworkMode::Standalone;
+
+		}
+		case ENetMode::NM_DedicatedServer:
+		{
+			return ENetworkMode::DedicatedServer;
+		}
+		case ENetMode::NM_ListenServer:
+		{
+			return ENetworkMode::ListenServer;
+		}
+		case ENetMode::NM_Client:
+		{
+			return ENetworkMode::Client;
+		}
+
+		// SHould NEVER HAPPEN.
+		default:
+		{
+			return ENetworkMode::Standalone;
+		}
+	}
+}
+
+void UNetSlime_Static::K2_ServerSide(UObject* WorldContextObject, EContinue& ExecRoute)
 {
 	UWorld* WorldRef = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::ReturnNull);
 
@@ -51,16 +125,13 @@ void UNetSlime_Static::ServerSide(UObject* WorldContextObject, EContinue& ExecRo
 	}
 	else
 	{
-		// Add log stuff here...
-
 		ExecRoute = EContinue::_;
 
 		return;
 	}
-
 }
 
-void UNetSlime_Static::ClientSide(UObject* _worldContextObject, EContinue& _execRoute)
+void UNetSlime_Static::K2_ClientSide(UObject* _worldContextObject, EContinue& _execRoute)
 {
 	UWorld* WorldRef = GEngine->GetWorldFromContextObject(_worldContextObject, EGetWorldErrorMode::ReturnNull);
 
@@ -79,7 +150,7 @@ void UNetSlime_Static::ClientSide(UObject* _worldContextObject, EContinue& _exec
 	}
 }
 
-void UNetSlime_Static::ServerOrClient(UObject* WorldContextObject, ENetworkSystemRole& ExecRoute)
+void UNetSlime_Static::K2_ServerOrClient(UObject* WorldContextObject, ENetworkSystemRole& ExecRoute)
 {
 	UWorld* WorldRef = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::ReturnNull);
 
@@ -97,66 +168,66 @@ void UNetSlime_Static::ServerOrClient(UObject* WorldContextObject, ENetworkSyste
 	}
 }
 
-void UNetSlime_Static::ServerType(UObject* WorldContextObject, EServerType& ExecRoute)
+void UNetSlime_Static::K2_ServerType(UObject* WorldContextObject, EServerType& ExecRoute)
 {
 	UWorld* WorldRef = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::ReturnNull);
 
 	switch (WorldRef->GetNetMode())
 	{
-	case ENetMode::NM_Standalone:
-	{
-		ExecRoute = EServerType::Standalone;
+		case ENetMode::NM_Standalone:
+		{
+			ExecRoute = EServerType::Standalone;
 
-		return;
-	}
-	case ENetMode::NM_DedicatedServer:
-	{
-		ExecRoute = EServerType::DedicatedServer;
+			return;
+		}
+		case ENetMode::NM_DedicatedServer:
+		{
+			ExecRoute = EServerType::DedicatedServer;
 
-		return;
-	}
-	case ENetMode::NM_ListenServer:
-	{
-		ExecRoute = EServerType::ListenServer;
+			return;
+		}
+		case ENetMode::NM_ListenServer:
+		{
+			ExecRoute = EServerType::ListenServer;
 
-		return;
-	}
-	default:
-	{
-		return;
-	}
+			return;
+		}
+		default:
+		{
+			return;
+		}
 	}
 }
 
-void UNetSlime_Static::NetworkMode(UObject* WorldContextObject, ENetworkMode& ExecRoute)
+void UNetSlime_Static::K2_NetworkMode(UObject* WorldContextObject, ENetworkMode& ExecRoute)
 {
 	UWorld* WorldRef = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::ReturnNull);
 
 	switch (WorldRef->GetNetMode())
 	{
-	case ENetMode::NM_Standalone:
-	{
-		ExecRoute = ENetworkMode::Standalone;
+		case ENetMode::NM_Standalone:
+		{
+			ExecRoute = ENetworkMode::Standalone;
 
-		return;
-	}
-	case ENetMode::NM_DedicatedServer:
-	{
-		ExecRoute = ENetworkMode::DedicatedServer;
+			return;
+		}
+		case ENetMode::NM_DedicatedServer:
+		{
+			ExecRoute = ENetworkMode::DedicatedServer;
 
-		return;
-	}
-	case ENetMode::NM_ListenServer:
-	{
-		ExecRoute = ENetworkMode::ListenServer;
+			return;
+		}
+		case ENetMode::NM_ListenServer:
+		{
+			ExecRoute = ENetworkMode::ListenServer;
 
-		return;
-	}
-	case ENetMode::NM_Client:
-	{
-		ExecRoute = ENetworkMode::Client;
+			return;
+		}
+		case ENetMode::NM_Client:
+		{
+			ExecRoute = ENetworkMode::Client;
 
-		return;
-	}
+			return;
+		}
 	}
 }

@@ -8,6 +8,7 @@
 #include "NT_GameInstance.h"
 #include "GameFramework/GameSession.h"
 #include "NT_PlayerState.h"
+#include "NT_PlayerController.h"
 
 
 
@@ -25,8 +26,8 @@ void ANT_GameMode::Server_OnFrameworkInitialized()
 	bool result = false;
 
 	result = MatchState == MatchState::WaitingToStart;
-	result = ReadyToStartMatch_Implementation();
-
+	result = ReadyToStartMatch_Implementation();   
+	// ^^ For some reason I couldn't just call ReadyToStartMatch (override didn't work)
 
 	// Check to see if we should immediately transfer to match start
 	if (result)
@@ -36,7 +37,6 @@ void ANT_GameMode::Server_OnFrameworkInitialized()
 
 	K2_Server_OnFrameworkInitialized();
 }
-
 
 
 // AGameMode
@@ -132,8 +132,6 @@ void ANT_GameMode::PostLogin(APlayerController* NewPlayer)
 	GenericPlayerInitialization(NewPlayer);
 
 	// Perform initialization that only happens on initially joining a server
-
-	//UWorld* World = GetWorld();
 
 	NewPlayer->ClientCapBandwidth(NewPlayer->Player->CurrentNetSpeed);
 

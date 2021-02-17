@@ -2,34 +2,50 @@
 
 #pragma once
 
+// Unreal
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "UStatic_Util.h"
+#include "NetSlime/NetSlime_Static.h"
+#include "NetSlime/NetSlime_Actor.h"
 
-
-
+// UE Header Tool
 #include "NT_PlayerController.generated.h"
 
-// NT_GameInstance.h
+
+// Forwards
+
 class UNT_GameInstance;
 class ANT_PlayerController;
 class ANT_GameMode;
-class UNetSlime_ActorComponent;
+class UNetSlime;
 
 
-
+// Delegates
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDelegate_OwningClient_PostLoginReady, ANT_PlayerController*, _player);
 
 
 
 /**
  * 
+ * 
  */
 UCLASS()
-class NETWORKINGTEMPLATE_API ANT_PlayerController : public APlayerController
+class NETWORKINGTEMPLATE_API ANT_PlayerController : public APlayerController //, public INetSlime
 {
 	GENERATED_BODY()
 
 public:
+
+	//INetSlime_Generate_Header()
+
+	UNetSlime_DumpCppDefsForClass();
+
+	UNetSlime_ActorComponent_DumpCppDefsForClass();
+
+	UFUNCTION(Category = "Net Slime", BlueprintCallable, Meta = (DisplayName = "IsOwningClient", ExpandEnumAsExecs = "ExecRoute"))
+	void K2_IsOwningClient(EIsResult& ExecRoute);
+
 
 	ANT_PlayerController();
 
@@ -44,26 +60,31 @@ protected:
 	UFUNCTION(Category = "Framework", BlueprintCallable, BlueprintImplementableEvent, meta = (DisplayName = "Local_On_FrameworkInitialized"))
 	void K2_Local_OnFrameworkInitialized();
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	class UNetSlime_ActorComponent* netSlime;
-
 	UFUNCTION()
 	void Server_SetOwningClient_FrameworkInitialized();
 
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_Reliable_NotifyFrameworkInit_OnOwningClient();
 
-	UPROPERTY(Category = "Framework", Replicated, BlueprintReadOnly, EditAnywhere)
+	UPROPERTY(Category = "Framework", Replicated, BlueprintReadOnly, VisibleAnywhere) 
 	bool bOwningClient_FrameworkInitialized = false;
 
 private:
 
 	
+	
 		
 // APlayerController
 public:
 
-	virtual void BeginPlay() override;
-
 	virtual bool CanRestartPlayer() override;
+
+// AController
+
+	//virtual void OnPossess(APawn* aPawn) override;
+
+// AActor
+public:
+
+	virtual void BeginPlay() override;
 };

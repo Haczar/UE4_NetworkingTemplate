@@ -8,7 +8,6 @@
 
 // NT
 #include "NT_Framework.h"
-#include "NT_PlayerController.h"
 
 // UE Header Tool
 #include "NT_GameInstance.generated.h"

@@ -9,6 +9,8 @@ public class NetworkingTemplate : ModuleRules
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
 		bEnableExceptions = true;
+
+        Definitions.Add("UNetSlime_AllowCppGlobalNamespace");
 	
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
 
