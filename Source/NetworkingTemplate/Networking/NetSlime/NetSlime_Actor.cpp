@@ -136,7 +136,7 @@ bool UNetSlime_Actor::IsOwningClient_Static(AActor* _actor)
 {
 	ENetMode networkInstance = _actor->GetWorld()->GetNetMode();
 
-	if (! _actor->IsA(APlayerController::StaticClass()) && ! _actor->GetOwner()->HasNetOwner())
+	if (!_actor->HasNetOwner())
 	{
 		UE_LOG(LogTemp, Error, TEXT("Must have net owner in order to determine if owning client."));
 	}
@@ -157,7 +157,7 @@ bool UNetSlime_Actor::IsOwningClient_Static(AActor* _actor)
 		playerRef = Cast<APlayerController>(_actor);
 	}
 
-	ENetRole netRoleInstance = ENetRole::ROLE_None;
+	ENetRole netRoleInstance   = ENetRole::ROLE_None;
 	ENetRole netRoleRemoteInst = ENetRole::ROLE_None;
 
 	if (playerRef != nullptr)

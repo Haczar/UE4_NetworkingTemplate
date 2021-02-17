@@ -27,10 +27,10 @@ public:
 	INetSlimeActor_Generate_Header();
 
 	// Non-Macroable.
-	UFUNCTION(Category = "Net Slime", BlueprintCallable, Meta = (DisplayName = "ServerAuthorized", ExpandEnumAsExecs = "ExecRoute"))
+	UFUNCTION(Category = "Net Slime", BlueprintCallable, Meta = (DisplayName = "Server Authorized", ExpandEnumAsExecs = "ExecRoute"))
 	void K2_ServerAuthorized(EIsResult& ExecRoute) { if (ServerAuthorized()) 
 	{ ExecRoute = EIsResult::Yes; return; } else { ExecRoute = EIsResult::No; return; } }
-	UFUNCTION(Category = "Net Slime", BlueprintCallable, Meta = (DisplayName = "IsOwningClient", ExpandEnumAsExecs = "ExecRoute"))
+	UFUNCTION(Category = "Net Slime", BlueprintCallable, Meta = (DisplayName = "Is Owning Client", ExpandEnumAsExecs = "ExecRoute"))
 	void K2_IsOwningClient  (EIsResult& ExecRoute) { if (IsOwningClient  ()) 
 	{ ExecRoute = EIsResult::Yes; return; } else { ExecRoute = EIsResult::No; return; } }
 

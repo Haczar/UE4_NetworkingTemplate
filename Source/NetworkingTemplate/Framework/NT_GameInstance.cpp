@@ -105,6 +105,22 @@ void UNT_GameInstance::Local_ProcessFrameworkState()
 
 				UE_LOG(LogTemp, Log, TEXT("NT_GameInstance: Framework initalized."));
 
+				switch (ServerOrClient())
+				{
+					case ENetworkSystemRole::Server:
+					{
+						UE_LOG(LogTemp, Log, TEXT("NT_GameInstance: On Server"));
+
+						break;
+					}
+					case ENetworkSystemRole::Client:
+					{
+						UE_LOG(LogTemp, Log, TEXT("NT_GameInstance: On Client."));
+
+						break;
+					}
+				}
+
 				Framework_Initialized.Broadcast();
 			}
 

@@ -9,30 +9,11 @@
 // NT
 
 #include "NT_GameInstance.h"
-
-
-
-
+#include "Actors/Pawns/NT_Pawn.h"
 
 
 
 // Public
-
-//void ANT_PlayerController::K2_IsOwningClient(EIsResult& ExecRoute)
-//{ 
-//	if (IsOwningClient()) 
-//	{ 
-//		ExecRoute = EIsResult::Yes; 
-//
-//		return;
-//	} 
-//	else 
-//	{ 
-//		ExecRoute = EIsResult::No; 
-//
-//		return;
-//	} 
-//}
 
 ANT_PlayerController::ANT_PlayerController()
 {
@@ -60,6 +41,23 @@ void ANT_PlayerController::Local_OnFrameworkInitialized()
 	K2_Local_OnFrameworkInitialized();
 }
 
+void ANT_PlayerController::OnPawnReady()
+{
+	UE_LOG(LogTemp, Log, TEXT("NT PlayerController: Player is ready."));
+
+	// Override this and add your own conditions...
+	K2_OnPawnReady();
+
+	On_PlayerReady.Broadcast();
+}
+
+void ANT_PlayerController::ServerRPC_Reliable_NotifyClientPlayerReady_Implementation()
+{
+	if (! ServerSide()) return;
+
+	On_PlayerReady.Broadcast();
+}
+
 void ANT_PlayerController::Server_SetOwningClient_FrameworkInitialized()
 {
 	bOwningClient_FrameworkInitialized = true;
@@ -69,10 +67,9 @@ void ANT_PlayerController::Server_SetOwningClient_FrameworkInitialized()
 
 void ANT_PlayerController::ServerRPC_Reliable_NotifyFrameworkInit_OnOwningClient_Implementation()
 {
-	if (ServerSide())
-	{
-		Server_SetOwningClient_FrameworkInitialized();
-	}
+	if (! ServerSide()) return;
+
+	Server_SetOwningClient_FrameworkInitialized();
 }
 
 
@@ -97,15 +94,22 @@ bool ANT_PlayerController::CanRestartPlayer()
 
 // AController
 
-//void ANT_PlayerController::OnPossess(APawn* aPawn)
-//{
-//	if (ServerSide())
-//	{
-//		UE_LOG(LogTemp, Log, TEXT("NT PlayerController: OnPosses"));
-//
-//
-//	}
-//}
+void ANT_PlayerController::OnPossess(APawn* PawnToPossess)
+{
+	Super::OnPossess(PawnToPossess);
+
+	if (PawnToPossess != NULL && (PlayerState == NULL || !PlayerState->IsOnlyASpectator()))
+	{
+		UE_LOG(LogTemp, Log, TEXT("NT PlayerController: OnPosses"));
+
+		if (ServerSide())
+		{
+			Cast<ANT_Pawn>(PawnToPossess)->On_PawnReady.AddDynamic(this, &ANT_PlayerController::OnPawnReady);
+
+			On_PawnPossessed.Broadcast();
+		}
+	}
+}
 
 
 

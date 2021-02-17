@@ -34,11 +34,11 @@ public:
 	bool IsOwningClient();
 
 	// Has access to server RPCs. Does not care if your not the owner.
-	UFUNCTION(Category = "Net Slime", BlueprintCallable, Meta = (DisplayName = "ServerAuthorized", ExpandEnumAsExecs = "ExecRoute"))
+	UFUNCTION(Category = "Net Slime", BlueprintCallable, Meta = (DisplayName = "Server Authorized", ExpandEnumAsExecs = "ExecRoute"))
 	void K2_ServerAuthorized(EIsResult &ExecRoute);
 
 	// Has access to server RPCs, and is the designated client responsible for the actor.
-	UFUNCTION(Category = "Net Slime", BlueprintCallable, Meta = (DisplayName = "IsOwningClient", ExpandEnumAsExecs = "ExecRoute"))
+	UFUNCTION(Category = "Net Slime", BlueprintCallable, Meta = (DisplayName = "Is Owning Client", ExpandEnumAsExecs = "ExecRoute"))
 	void K2_IsOwningClient(EIsResult& ExecRoute);
 };
 
