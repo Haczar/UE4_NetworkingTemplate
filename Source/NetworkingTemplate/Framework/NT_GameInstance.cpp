@@ -103,7 +103,7 @@ void UNT_GameInstance::Local_ProcessFrameworkState()
 			{
 				frameworkState = EFramework_State::Initialized;
 
-				UE_LOG(LogTemp, Log, TEXT("NT_GameInstance: Framework initalized."));
+				UE_LOG(LogTemp, Log, TEXT("NT_GameInstance: Framework initialized."));
 
 				switch (ServerOrClient())
 				{

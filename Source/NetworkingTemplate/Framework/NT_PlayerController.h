@@ -78,6 +78,13 @@ protected:
 	UFUNCTION(Category = "Framework", BlueprintCallable, BlueprintImplementableEvent, meta = (DisplayName = "On Pawn Ready"))
 	void K2_OnPawnReady();
 
+	// This is the safest place to do all the starting logic as all possible setup, replication and referencing desired should have been finished.
+	UFUNCTION()
+	virtual void OnPlayerReady();
+
+	UFUNCTION(Category = "Framework", BlueprintCallable, BlueprintImplementableEvent, meta = (DisplayName = "On Player: Ready"))
+	void K2_OnPlayerReady();
+
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_Reliable_NotifyClientPlayerReady();
 

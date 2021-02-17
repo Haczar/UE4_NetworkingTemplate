@@ -5,6 +5,8 @@
 
 // Unreal
 #include "GameFramework/PlayerState.h"
+#include "Interfaces/NetworkPredictionInterface.h"
+#include "GameFramework/PawnMovementComponent.h"
 
 // NT
 
@@ -45,8 +47,26 @@ void ANT_PlayerController::OnPawnReady()
 {
 	UE_LOG(LogTemp, Log, TEXT("NT PlayerController: Player is ready."));
 
+	// Originally: Super::OnPossess(PawnToPossess);
+		ChangeState(NAME_Playing);
+
+		if (bAutoManageActiveCameraTarget)
+		{
+			AutoManageActiveCameraTarget(GetPawn());
+
+			ResetCameraMode();
+		}
+	// End of Originally: Super::OnPossess(PawnToPossess);
+
 	// Override this and add your own conditions...
 	K2_OnPawnReady();
+}
+
+// This should ONLY occur if EVERYTHING is set to go brrrrr on the owning client side. NO IFS OR BUTS.
+void ANT_PlayerController::OnPlayerReady()
+{
+	// Do what you gotta do and go brrrrrrr (BP Side).
+	K2_OnPlayerReady();
 
 	On_PlayerReady.Broadcast();
 }
@@ -96,10 +116,56 @@ bool ANT_PlayerController::CanRestartPlayer()
 
 void ANT_PlayerController::OnPossess(APawn* PawnToPossess)
 {
-	Super::OnPossess(PawnToPossess);
+	//Super::OnPossess(PawnToPossess);
 
-	if (PawnToPossess != NULL && (PlayerState == NULL || !PlayerState->IsOnlyASpectator()))
+	if ( PawnToPossess != NULL && (PlayerState == NULL || !PlayerState->IsOnlyASpectator()) )
 	{
+		// ====================================================================Originally: Super::OnPossess(PawnToPossess);
+			const bool bNewPawn = (GetPawn() != PawnToPossess);
+
+			if (GetPawn() && bNewPawn)
+			{
+				UnPossess();
+			}
+
+			if (PawnToPossess->Controller != NULL)
+			{
+				PawnToPossess->Controller->UnPossess();
+			}
+
+			PawnToPossess->PossessedBy(this);
+
+			// update rotation to match possessed pawn's rotation
+			SetControlRotation( PawnToPossess->GetActorRotation() );
+
+			SetPawn(PawnToPossess);
+
+			check(GetPawn() != NULL);
+
+			if (GetPawn() && GetPawn()->PrimaryActorTick.bStartWithTickEnabled)
+			{
+				GetPawn()->SetActorTickEnabled(true);
+			}
+
+			INetworkPredictionInterface* NetworkPredictionInterface = GetPawn() ? Cast<INetworkPredictionInterface>(GetPawn()->GetMovementComponent()) : NULL;
+
+			if (NetworkPredictionInterface)
+			{
+				NetworkPredictionInterface->ResetPredictionData_Server();
+			}
+
+			AcknowledgedPawn = NULL;
+
+			// Local PCs will have the Restart() triggered right away in ClientRestart (via PawnClientRestart()), but the server should call Restart() locally for remote PCs.
+			// We're really just trying to avoid calling Restart() multiple times.
+			if (!IsLocalPlayerController())
+			{
+				GetPawn()->Restart();
+			}
+
+			ClientRestart(GetPawn());
+		//==========================================================End of=================== Originally: Super::OnPossess(PawnToPossess);
+
 		UE_LOG(LogTemp, Log, TEXT("NT PlayerController: OnPosses"));
 
 		if (ServerSide())
@@ -108,7 +174,7 @@ void ANT_PlayerController::OnPossess(APawn* PawnToPossess)
 
 			On_PawnPossessed.Broadcast();
 		}
-	}
+	}	
 }
 
 
@@ -136,3 +202,4 @@ void ANT_PlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 
 	DOREPLIFETIME(ANT_PlayerController, bOwningClient_FrameworkInitialized);
 }
+
