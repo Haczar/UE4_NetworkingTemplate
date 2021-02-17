@@ -6,6 +6,12 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "UStatic_Util.h"
+
+// NT
+#include "NT_PlayerState.h"
+
+
+// NetSlime
 #include "NetSlime/NetSlime_Static.h"
 #include "NetSlime/NetSlime_Actor.h"
 
@@ -62,31 +68,35 @@ public:
 	FDelegate_PawnPossessed On_PawnPossessed;
 
 	UPROPERTY(Category = "Framework", BlueprintAssignable, BlueprintCallable, Meta = (DisplayName = "On Player: Ready"))
-	FDelegate_PlayerReady On_PlayerReady;
+	FDelegate_PlayerReady On_OwningClient_Ready;
 
 protected:
 
-	UFUNCTION()
-	virtual void Local_OnFrameworkInitialized();
-
-	UFUNCTION(Category = "Framework", BlueprintCallable, BlueprintImplementableEvent, meta = (DisplayName = "Local: On FrameworkInitialized"))
-	void K2_Local_OnFrameworkInitialized();
+	friend void ANT_PlayerState::ClientInitialize(class AController* _newOwner);
 
 	UFUNCTION()
-	virtual void OnPawnReady();
+	virtual void Local_FrameworkInitialized();
 
-	UFUNCTION(Category = "Framework", BlueprintCallable, BlueprintImplementableEvent, meta = (DisplayName = "On Pawn Ready"))
-	void K2_OnPawnReady();
+	UFUNCTION(Category = "Framework", BlueprintCallable, BlueprintImplementableEvent, meta = (DisplayName = "Local: On Framework Initialized"))
+	void K2_Local_FrameworkInitialized();
+
+	UFUNCTION()
+	virtual void PawnReady();
+
+	UFUNCTION(Category = "Framework", BlueprintCallable, BlueprintImplementableEvent, meta = (DisplayName = "Pawn Ready"))
+	void K2_PawnReady();
+
+	void Client_ProcessPlayerState();
 
 	// This is the safest place to do all the starting logic as all possible setup, replication and referencing desired should have been finished.
 	UFUNCTION()
-	virtual void OnPlayerReady();
+	virtual void OwningClient_Ready();
 
-	UFUNCTION(Category = "Framework", BlueprintCallable, BlueprintImplementableEvent, meta = (DisplayName = "On Player: Ready"))
-	void K2_OnPlayerReady();
+	UFUNCTION(Category = "Framework", BlueprintCallable, BlueprintImplementableEvent, meta = (DisplayName = "Owning Client: Ready"))
+	void K2_OwningClient_Ready();
 
 	UFUNCTION(Server, Reliable)
-	void ServerRPC_Reliable_NotifyClientPlayerReady();
+	void ServerRPC_Reliable_NotifyOwningClient_Ready();
 
 	UFUNCTION()
 	void Server_SetOwningClient_FrameworkInitialized();

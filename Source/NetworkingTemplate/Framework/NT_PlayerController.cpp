@@ -24,9 +24,9 @@ ANT_PlayerController::ANT_PlayerController()
 
 // Protected
 
-void ANT_PlayerController::Local_OnFrameworkInitialized()
+void ANT_PlayerController::Local_FrameworkInitialized()
 {
-	UE_LOG(LogTemp, Log, TEXT("NT PlayerController: Received framework initialization."));
+	NetLog(TEXT("Received framework initialization."));
 
 	if (IsOwningClient())
 	{
@@ -40,12 +40,12 @@ void ANT_PlayerController::Local_OnFrameworkInitialized()
 		}
 	}
 
-	K2_Local_OnFrameworkInitialized();
+	K2_Local_FrameworkInitialized();
 }
 
-void ANT_PlayerController::OnPawnReady()
+void ANT_PlayerController::PawnReady()
 {
-	UE_LOG(LogTemp, Log, TEXT("NT PlayerController: Player is ready."));
+	NetLog(TEXT("Player is ready."));
 
 	// Originally: Super::OnPossess(PawnToPossess);
 		ChangeState(NAME_Playing);
@@ -59,23 +59,47 @@ void ANT_PlayerController::OnPawnReady()
 	// End of Originally: Super::OnPossess(PawnToPossess);
 
 	// Override this and add your own conditions...
-	K2_OnPawnReady();
+	K2_PawnReady();
+
+	if (ServerSide() && IsOwningClient())
+	{
+		// The server host doesn't have to wait for the player state to replicate.
+		OwningClient_Ready();
+	}
+}
+
+void ANT_PlayerController::Client_ProcessPlayerState()
+{
+	if (PlayerState != NULL)
+	{
+		OwningClient_Ready();
+	}
 }
 
 // This should ONLY occur if EVERYTHING is set to go brrrrr on the owning client side. NO IFS OR BUTS.
-void ANT_PlayerController::OnPlayerReady()
+void ANT_PlayerController::OwningClient_Ready()
 {
-	// Do what you gotta do and go brrrrrrr (BP Side).
-	K2_OnPlayerReady();
+	NetLog(TEXT("Owning Client of controller is ready to play."));
 
-	On_PlayerReady.Broadcast();
+	if (IsOwningClient())
+	{
+		// Do what you gotta do and go brrrrrrr (BP Side).
+		K2_OwningClient_Ready();
+
+		// Not sure if I should do it client side..
+		//On_OwningClient_Ready.Broadcast();
+
+		ServerRPC_Reliable_NotifyOwningClient_Ready_Implementation();
+	}
 }
 
-void ANT_PlayerController::ServerRPC_Reliable_NotifyClientPlayerReady_Implementation()
+void ANT_PlayerController::ServerRPC_Reliable_NotifyOwningClient_Ready_Implementation()
 {
 	if (! ServerSide()) return;
 
-	On_PlayerReady.Broadcast();
+	NetLog(TEXT("Owning Client Ready: Notified via RPC."));
+
+	On_OwningClient_Ready.Broadcast();
 }
 
 void ANT_PlayerController::Server_SetOwningClient_FrameworkInitialized()
@@ -166,11 +190,11 @@ void ANT_PlayerController::OnPossess(APawn* PawnToPossess)
 			ClientRestart(GetPawn());
 		//==========================================================End of=================== Originally: Super::OnPossess(PawnToPossess);
 
-		UE_LOG(LogTemp, Log, TEXT("NT PlayerController: OnPosses"));
+		NetLog(TEXT("OnPossess"));
 
 		if (ServerSide())
 		{
-			Cast<ANT_Pawn>(PawnToPossess)->On_PawnReady.AddDynamic(this, &ANT_PlayerController::OnPawnReady);
+			Cast<ANT_Pawn>(PawnToPossess)->On_PawnReady.AddDynamic(this, &ANT_PlayerController::PawnReady);
 
 			On_PawnPossessed.Broadcast();
 		}
@@ -187,11 +211,11 @@ void ANT_PlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UE_LOG(LogTemp, Log, TEXT("NT PlayerController: BeginPlay"));
+	NetLog(TEXT("BeginPlay"));
 
 	UNT_GameInstance* gInst = GetGameInstance<UNT_GameInstance>();
 
-	gInst->Framework_Initialized.AddDynamic(this, &ANT_PlayerController::Local_OnFrameworkInitialized);
+	gInst->On_Framework_Initialized.AddDynamic(this, &ANT_PlayerController::Local_FrameworkInitialized);
 
 	gInst->Local_NotifyComponentReady(EFramework_ComponentFlag::PlayerController);
 }

@@ -3,7 +3,11 @@
 // Parent Header
 #include "NetSlime_Static.h"
 
-// Unreal
+
+
+
+DEFINE_LOG_CATEGORY(NetSlime);
+
 
 
 
@@ -225,4 +229,53 @@ void UNetSlime_Static::K2_NetworkMode(UObject* WorldContextObject, ENetworkMode&
 			return;
 		}
 	}
+}
+
+void UNetSlime_Static::Log(UObject* _context, FString _message)
+{
+	FString mode;
+
+	switch (NetworkMode(_context))
+	{
+		case ENetworkMode::Standalone:
+		{
+			mode = TEXT("Standalone     ");
+
+			break;
+		}
+		case ENetworkMode::ListenServer:
+		{
+			mode = TEXT("ListenServer   ");
+
+			//mode += TEXT(" Role: ");
+
+			break;
+		}
+		case ENetworkMode::DedicatedServer:
+		{
+			mode = TEXT("DedicatedServer");
+
+			break;
+		}
+		case ENetworkMode::Client:
+		{
+			mode = TEXT("Client         ");
+
+			break;
+		}
+	}
+
+	_message = FString::Printf(TEXT("%-60s"), *_message);
+
+	SET_WARN_COLOR(COLOR_PURPLE)
+
+	UE_LOG(NetSlime, Log, TEXT("%s:  %s in [%s]"  ), *mode, *_message, *_context->GetName());
+
+	CLEAR_WARN_COLOR()
+}
+
+
+void UNetSlime_Static::K2_Log(UObject* _context, FString _messsage)
+{
+	Log(_context, _messsage);
 }

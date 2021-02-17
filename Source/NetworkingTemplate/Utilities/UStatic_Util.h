@@ -35,4 +35,6 @@ UCLASS(Blueprintable)
 class NETWORKINGTEMPLATE_API UStatic_Util : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
+
+
 };

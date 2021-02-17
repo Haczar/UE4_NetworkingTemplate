@@ -1,27 +1,36 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
+// Parent
 #include "NT_GameMode.h"
 
-
-
-#include "NT_GameInstance.h"
+// Unreal
 #include "GameFramework/GameSession.h"
+
+// NT
+#include "NT_GameInstance.h"
 #include "NT_PlayerState.h"
 #include "NT_PlayerController.h"
 
 
 
+// Public
+
+ANT_GameMode::ANT_GameMode()
+{
+}
+
+
+
 // Protected
 
-void ANT_GameMode::Server_On_OwningClient_PostLogin(ANT_PlayerController* _player)
+void ANT_GameMode::Server_OwningClient_PostLogin(ANT_PlayerController* _player)
 {
 	HandleStartingNewPlayer(_player);
 }
 
-void ANT_GameMode::Server_OnFrameworkInitialized()
+void ANT_GameMode::Server_FrameworkInitialized()
 {
-	UE_LOG(LogTemp, Log, TEXT("NT GameMode: Received framework initialization."));
+	NetLog(TEXT("Received framework initialization."));
 
 	bool result = false;
 
@@ -35,7 +44,7 @@ void ANT_GameMode::Server_OnFrameworkInitialized()
 		StartMatch();
 	}
 
-	K2_Server_OnFrameworkInitialized();
+	K2_Server_FrameworkInitialized();
 }
 
 
@@ -88,11 +97,11 @@ void ANT_GameMode::StartPlay()
 
 	// Start match is deferred until the framework is considered initialized.
 
-	UE_LOG(LogTemp, Log, TEXT("NT GameMode: StartPlay"));
+	NetLog(TEXT("StartPlay"));
 
 	UNT_GameInstance* gInst = GetGameInstance<UNT_GameInstance>();
 
-	gInst->Framework_Initialized.AddDynamic(this, &ANT_GameMode::Server_OnFrameworkInitialized);
+	gInst->On_Framework_Initialized.AddDynamic(this, &ANT_GameMode::Server_FrameworkInitialized);
 
 	gInst->Local_NotifyComponentReady(EFramework_ComponentFlag::GameMode);
 
@@ -159,5 +168,5 @@ void ANT_GameMode::PostLogin(APlayerController* NewPlayer)
 
 	FGameModeEvents::GameModePostLoginEvent.Broadcast(this, NewPlayer);
 
-	Cast<ANT_PlayerController>(NewPlayer)->On_OwningClient_PostLogin.AddDynamic(this, &ANT_GameMode::Server_On_OwningClient_PostLogin);
+	Cast<ANT_PlayerController>(NewPlayer)->On_OwningClient_PostLogin.AddDynamic(this, &ANT_GameMode::Server_OwningClient_PostLogin);
 }

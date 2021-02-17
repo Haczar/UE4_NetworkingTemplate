@@ -26,7 +26,7 @@ void UNT_GameInstance::Local_NotifyComponentReady(EFramework_ComponentFlag _comp
 		{
 			frameworkComponentState |= (uint32)EFramework_ComponentFlag::GameMode;
 
-			UE_LOG(LogTemp, Log, TEXT("NT_GameInstance: Framework component ready: Game Mode."));
+			NetLog(TEXT("Framework component ready: Game Mode."));
 
 			break;
 		}
@@ -34,7 +34,7 @@ void UNT_GameInstance::Local_NotifyComponentReady(EFramework_ComponentFlag _comp
 		{
 			frameworkComponentState |= (uint32)EFramework_ComponentFlag::GameState;
 
-			UE_LOG(LogTemp, Log, TEXT("NT_GameInstance: Framework component ready: Game State."));
+			NetLog(TEXT("Framework component ready: Game State."));
 
 			break;
 		}
@@ -42,7 +42,7 @@ void UNT_GameInstance::Local_NotifyComponentReady(EFramework_ComponentFlag _comp
 		{
 			frameworkComponentState |= (uint32)EFramework_ComponentFlag::PlayerController;
 
-			UE_LOG(LogTemp, Log, TEXT("NT_GameInstance: Framework component ready: Player Controller."));
+			NetLog(TEXT("Framework component ready: Player Controller."));
 
 			break;
 		}
@@ -50,7 +50,7 @@ void UNT_GameInstance::Local_NotifyComponentReady(EFramework_ComponentFlag _comp
 		{
 			frameworkComponentState |= (uint32)EFramework_ComponentFlag::PlayerState;
 
-			UE_LOG(LogTemp, Log, TEXT("NT_GameInstance: Framework component ready: Player State."));
+			NetLog(TEXT("Framework component ready: Player State."));
 
 			break;
 		}
@@ -58,7 +58,7 @@ void UNT_GameInstance::Local_NotifyComponentReady(EFramework_ComponentFlag _comp
 		{
 			frameworkComponentState |= (uint32)EFramework_ComponentFlag::Levels;
 
-			UE_LOG(LogTemp, Log, TEXT("NT_GameInstance: Framework component ready: Levels."));
+			NetLog(TEXT("Framework component ready: Levels."));
 
 			break;
 		}
@@ -73,7 +73,7 @@ void UNT_GameInstance::Local_NotifyComponentReady(EFramework_ComponentFlag _comp
 
 void UNT_GameInstance::Local_ClearFrameworkState()
 {
-	UE_LOG(LogTemp, Log, TEXT("NT_GameInstance: Clearing framework state."));
+	NetLog(TEXT("Clearing framework state."));
 
 	frameworkComponentState = int32(EFramework_ComponentFlag::None);
 	frameworkState          = EFramework_State::Uninitialized;
@@ -103,25 +103,9 @@ void UNT_GameInstance::Local_ProcessFrameworkState()
 			{
 				frameworkState = EFramework_State::Initialized;
 
-				UE_LOG(LogTemp, Log, TEXT("NT_GameInstance: Framework initialized."));
+				NetLog(TEXT("Framework initialized."));
 
-				switch (ServerOrClient())
-				{
-					case ENetworkSystemRole::Server:
-					{
-						UE_LOG(LogTemp, Log, TEXT("NT_GameInstance: On Server"));
-
-						break;
-					}
-					case ENetworkSystemRole::Client:
-					{
-						UE_LOG(LogTemp, Log, TEXT("NT_GameInstance: On Client."));
-
-						break;
-					}
-				}
-
-				Framework_Initialized.Broadcast();
+				On_Framework_Initialized.Broadcast();
 			}
 
 			break;

@@ -23,12 +23,12 @@ ANT_Pawn::ANT_Pawn()
 
 // APawn
 
-void ANT_Pawn::OnPlayer_PawnPossessed()
+void ANT_Pawn::Controller_PawnPossessed()
 {
-	UE_LOG(LogTemp, Log, TEXT("NT Pawn: Player confirmed possession."));
+	NetLog(TEXT("Controller confirmed possession."));
 
 	// Do stuff here that you needed to wait for the player controller be aware of you for.
-	K2_OnPlayer_PawnPossessed();
+	K2_Controller_PawnPossessed();
 
 	On_PawnReady.Broadcast();
 }
@@ -42,7 +42,7 @@ void ANT_Pawn::ServerRPC_Reliable_NotifyClientPawnReady_Implementation()
 
 void ANT_Pawn::PossessedBy(AController* NewController)
 {
-	UE_LOG(LogTemp, Log, TEXT("NT Pawn: Pawn possessed."));
+	NetLog(TEXT("Pawn possessed."));
 
 	SetOwner(NewController);
 
@@ -71,7 +71,7 @@ void ANT_Pawn::PossessedBy(AController* NewController)
 		CopyRemoteRoleFrom(GetDefault<APawn>());
 	}
 
-	Cast<ANT_PlayerController>(NewController)->On_PawnPossessed.AddDynamic(this, &ANT_Pawn::OnPlayer_PawnPossessed);
+	Cast<ANT_PlayerController>(NewController)->On_PawnPossessed.AddDynamic(this, &ANT_Pawn::Controller_PawnPossessed);
 
 	// dispatch Blueprint event if necessary
 	if (OldController != NewController)

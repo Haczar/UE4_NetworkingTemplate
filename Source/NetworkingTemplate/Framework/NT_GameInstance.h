@@ -38,7 +38,7 @@ public:
 	void Local_NotifyComponentReady(EFramework_ComponentFlag _componentReady);
 
 	UPROPERTY(Category = "Framework", BlueprintAssignable, BlueprintCallable, Meta = (DisplayName = "On Framework Initialized"))
-	FDelegate_FrameworkInitialized Framework_Initialized;
+	FDelegate_FrameworkInitialized On_Framework_Initialized;
 
 protected:
 

@@ -4,6 +4,7 @@
 
 // Unreal
 #include "CoreMinimal.h"
+#include "Logging/LogMacros.h"
 
 // NT
 #include "Utilities/UStatic_Util.h"
@@ -60,7 +61,7 @@ enum class ENetworkMode : uint8
 	Client
 };
 
-
+NETWORKINGTEMPLATE_API DECLARE_LOG_CATEGORY_EXTERN(NetSlime, Log, All);
 
 /**
  * 
@@ -101,7 +102,13 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Net Slime", Meta = (DisplayName = "Network Mode", CallableWithoutWorldContext, ExpandEnumAsExecs = "ExecRoute", WorldContext = "WorldContextObject"))
 	static void K2_NetworkMode(UObject* WorldContextObject, ENetworkMode& ExecRoute);
+
+	static void Log(UObject* _context, FString _messsage);
+
+	UFUNCTION(BlueprintCallable, Category = "Net Slime", Meta = (DisplayName = "NetLog", CallableWithoutWorldContext, WorldContext = "_context"))
+	static void K2_Log(UObject* _context, FString _messsage);
 };
+
 
 
 // Interface
@@ -123,6 +130,8 @@ public:
 	virtual ENetworkSystemRole ServerOrClient() = NULL;
 	virtual EServerType        ServerType    () = NULL;
 	virtual ENetworkMode       NetworkMode   () = NULL;
+
+	virtual void NetLog(FString _message) = NULL;
 };
 
 #define INetSlime_Generate_Header() \
@@ -130,4 +139,5 @@ FORCEINLINE bool               ServerSide    () { return UNetSlime_Static::Serve
 FORCEINLINE bool               ClientSide    () { return UNetSlime_Static::ClientSide    (GetWorld()); } \
 FORCEINLINE ENetworkSystemRole ServerOrClient() { return UNetSlime_Static::ServerOrClient(GetWorld()); } \
 FORCEINLINE EServerType        ServerType    () { return UNetSlime_Static::ServerType    (GetWorld()); } \
-FORCEINLINE ENetworkMode       NetworkMode   () { return UNetSlime_Static::NetworkMode   (GetWorld()); }
+FORCEINLINE ENetworkMode       NetworkMode   () { return UNetSlime_Static::NetworkMode   (GetWorld()); } \
+FORCEINLINE void NetLog(FString _message) { return UNetSlime_Static::Log(this, _message); }

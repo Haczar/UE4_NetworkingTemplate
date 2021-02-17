@@ -25,4 +25,28 @@ class NETWORKINGTEMPLATE_API ANT_GameState : public AGameState, public INetSlime
 public:
 
 	INetSlime_Generate_Header();
+
+	ANT_GameState();
+
+
+protected:
+
+	UFUNCTION()
+	virtual void Local_FrameworkInitialized();
+
+	UFUNCTION(Category = "Framework", BlueprintCallable, BlueprintImplementableEvent, meta = (DisplayName = "Local: Framework Initialized"))
+	void K2_Local_FrameworkInitialized();
+
+
+	// AGameState
+
+public:
+
+	// AActor
+
+public:
+
+	virtual void BeginPlay() override;
+
+
 };

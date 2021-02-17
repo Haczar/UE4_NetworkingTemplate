@@ -43,10 +43,10 @@ public:
 	ANT_Pawn();
 
 	UFUNCTION()
-	virtual void OnPlayer_PawnPossessed();
+	virtual void Controller_PawnPossessed();
 
-	UFUNCTION(Category = "Framework", BlueprintCallable, BlueprintImplementableEvent, meta = (DisplayName = "On Player: Pawn Possessed"))
-	void K2_OnPlayer_PawnPossessed();
+	UFUNCTION(Category = "Framework", BlueprintCallable, BlueprintImplementableEvent, meta = (DisplayName = "Controller: Pawn Possessed"))
+	void K2_Controller_PawnPossessed();
 
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_Reliable_NotifyClientPawnReady();

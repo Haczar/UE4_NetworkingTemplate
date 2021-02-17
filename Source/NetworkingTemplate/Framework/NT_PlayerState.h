@@ -12,6 +12,8 @@
 // UE Header Tool
 #include "NT_PlayerState.generated.h"
 
+
+
 /**
  * 
  */
@@ -23,5 +25,34 @@ class NETWORKINGTEMPLATE_API ANT_PlayerState : public APlayerState, public INetS
 public:
 
 	INetSlime_Generate_Header();
-	
+
+	ANT_PlayerState();
+
+protected:
+
+	UFUNCTION()
+	virtual void Local_FrameworkInitialized();
+
+	UFUNCTION(Category = "Framework", BlueprintCallable, BlueprintImplementableEvent, meta = (DisplayName = "Local: Framework Initialized"))
+	void K2_Local_FrameworkInitialized();
+
+
+
+// APlayerState
+
+public:
+
+
+// AActor
+
+public:
+
+	virtual void BeginPlay() override;
+
+	// This gets called on replication of the player state (client side only).
+	virtual void ClientInitialize(class AController* C) override;
+
+	virtual void PostInitializeComponents() override;
+
+	virtual void Reset() override;
 };
