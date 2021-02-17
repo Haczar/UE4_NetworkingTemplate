@@ -23,7 +23,17 @@ class NETWORKINGTEMPLATE_API ANT_Pawn : public APawn, public INetSlime, public I
 public:
 
 	INetSlime_Generate_Header();
+
 	INetSlimeActor_Generate_Header();
+
+	// Non-Macroable.
+	UFUNCTION(Category = "Net Slime", BlueprintCallable, Meta = (DisplayName = "ServerAuthorized", ExpandEnumAsExecs = "ExecRoute"))
+	void K2_ServerAuthorized(EIsResult& ExecRoute) 
+	{ if (ServerAuthorized()) { ExecRoute = EIsResult::Yes; return; } else { ExecRoute = EIsResult::No; return; } }
+	UFUNCTION(Category = "Net Slime", BlueprintCallable, Meta = (DisplayName = "IsOwningClient", ExpandEnumAsExecs = "ExecRoute"))
+	void K2_IsOwningClient  (EIsResult& ExecRoute) 
+	{ if (IsOwningClient  ()) { ExecRoute = EIsResult::Yes; return; } else { ExecRoute = EIsResult::No; return; } }
+
 
 	// Sets default values for this pawn's properties
 	ANT_Pawn();

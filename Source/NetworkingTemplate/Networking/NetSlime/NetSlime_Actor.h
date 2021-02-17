@@ -65,30 +65,4 @@ public:
 
 #define INetSlimeActor_Generate_Header() \
 FORCEINLINE bool ServerAuthorized() { return UNetSlime_Actor::ServerAuthorized_Static(this); } \
-FORCEINLINE bool IsOwningClient  () { return UNetSlime_Actor::IsOwningClient_Static  (this); } \
-UFUNCTION(Category = "Net Slime", BlueprintCallable, Meta = (DisplayName = "ServerAuthorized", ExpandEnumAsExecs = "ExecRoute")) \
-void K2_ServerAuthorized(EIsResult& ExecRoute) \
-{ 	\
-	if (ServerAuthorized())\
-	{ \
-		ExecRoute = EIsResult::Yes; \
-		return; \
-	} \
-	else \
-	{ \
-		ExecRoute = EIsResult::No; return; } \
-} \
-UFUNCTION(Category = "Net Slime", BlueprintCallable, Meta = (DisplayName = "IsOwningClient", ExpandEnumAsExecs = "ExecRoute")) \
-void K2_IsOwningClient(EIsResult& ExecRoute) \
-{ \
-	if (IsOwningClient()) \
-	{ \
-		ExecRoute = EIsResult::Yes; \
-		return; \
-	} \
-	else \
-	{ \
-		ExecRoute = EIsResult::No; return; \
-	} \
-} 
-
+FORCEINLINE bool IsOwningClient  () { return UNetSlime_Actor::IsOwningClient_Static  (this); } 
