@@ -43,25 +43,25 @@ public:
 };
 
 
-//UINTERFACE(Blueprintable)
-//class UNetSlimeActor : public UInterface
-//{
-//	GENERATED_BODY()
-//
-//};
-//
-//class NETWORKINGTEMPLATE_API INetSlimeActor
-//{
-//	GENERATED_BODY()
-//
-//public:
-//
-//	virtual bool ServerAuthorized();
-//	virtual bool IsOwningClient  ();
-//};
+UINTERFACE(MinimalAPI)
+class UNetSlimeActor : public UInterface
+{
+	GENERATED_BODY()
+
+};
+
+class NETWORKINGTEMPLATE_API INetSlimeActor
+{
+	GENERATED_BODY()
+
+public:
+
+	virtual bool ServerAuthorized() = NULL;
+	virtual bool IsOwningClient  () = NULL;
+};
 
 
-#define UNetSlime_ActorComponent_DumpCppDefsForClass() \
+#define INetSlimeActor_Generate_Header() \
 bool ServerAuthorized() { return UNetSlime_Actor::ServerAuthorized_Static(this); } \
 bool IsOwningClient  () { return UNetSlime_Actor::IsOwningClient_Static  (this); }
 

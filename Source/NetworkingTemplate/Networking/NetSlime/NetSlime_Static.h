@@ -104,7 +104,8 @@ public:
 };
 
 
-UINTERFACE(BlueprintType)
+
+UINTERFACE(MinimalAPI)
 class UNetSlime : public UInterface
 {
 	GENERATED_BODY()
@@ -118,43 +119,18 @@ class NETWORKINGTEMPLATE_API INetSlime
 public:
 
 
-	UFUNCTION(Category = "Net Slime", BlueprintCallable, BlueprintNativeEvent) 
-	bool ServerSide();
-	UFUNCTION(Category = "Net Slime", BlueprintCallable, BlueprintNativeEvent) 
-	bool               ClientSide    ();
-	UFUNCTION(Category = "Net Slime", BlueprintCallable, BlueprintNativeEvent) 
-	ENetworkSystemRole ServerOrClient();
-	UFUNCTION(Category = "Net Slime", BlueprintCallable, BlueprintNativeEvent) 
-	EServerType        ServerType    ();
-	UFUNCTION(Category = "Net Slime", BlueprintCallable, BlueprintNativeEvent) 
-	ENetworkMode       NetworkMode   ();
+	virtual bool               ServerSide    () = NULL;
+	virtual bool               ClientSide    () = NULL;
+	virtual ENetworkSystemRole ServerOrClient() = NULL;
+	virtual EServerType        ServerType    () = NULL;
+	virtual ENetworkMode       NetworkMode   () = NULL;
 };
 
 
-#define UNetSlime_DumpCppDefsForClass() \
+
+#define INetSlime_Generate_Header() \
 FORCEINLINE bool               ServerSide    () { return UNetSlime_Static::ServerSide    (GetWorld()); } \
 FORCEINLINE bool               ClientSide    () { return UNetSlime_Static::ClientSide    (GetWorld()); } \
 FORCEINLINE ENetworkSystemRole ServerOrClient() { return UNetSlime_Static::ServerOrClient(GetWorld()); } \
 FORCEINLINE EServerType        ServerType    () { return UNetSlime_Static::ServerType    (GetWorld()); } \
 FORCEINLINE ENetworkMode       NetworkMode   () { return UNetSlime_Static::NetworkMode   (GetWorld()); }
-
-// This allows for Net Slime static functionality to be  called without 
-// having to reference the class or provide a world context for the class that has this macro in its header body.
-#define INetSlime_Generate_Header() \
-virtual bool               ServerSide_Implementation    () override; \
-virtual bool               ClientSide_Implementation    () override; \
-virtual ENetworkSystemRole ServerOrClient_Implementation() override; \
-virtual EServerType        ServerType_Implementation    () override; \
-virtual ENetworkMode       NetworkMode_Implementation   () override; 
-
-
-
-#define INetSlime_Generate_Implementation(_className) \
-bool _className::ServerSide_Implementation    () { return UNetSlime_Static::ServerSide(GetWorld() ); } \
-bool _className::ClientSide_Implementation    () { return UNetSlime_Static::ClientSide(GetWorld() ); } \
-ENetworkSystemRole _className::ServerOrClient_Implementation() { return UNetSlime_Static::ServerOrClient(GetWorld() ); } \
-EServerType _className::ServerType_Implementation    () { return UNetSlime_Static::ServerType(GetWorld() ); } \
-ENetworkMode _className::NetworkMode_Implementation   () { return UNetSlime_Static::NetworkMode(GetWorld() ); }
-
-
-

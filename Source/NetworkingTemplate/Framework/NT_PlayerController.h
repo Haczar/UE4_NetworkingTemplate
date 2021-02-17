@@ -31,17 +31,15 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDelegate_OwningClient_PostLoginRead
  * 
  */
 UCLASS()
-class NETWORKINGTEMPLATE_API ANT_PlayerController : public APlayerController //, public INetSlime
+class NETWORKINGTEMPLATE_API ANT_PlayerController : public APlayerController, public INetSlime, public INetSlimeActor
 {
 	GENERATED_BODY()
 
 public:
 
-	//INetSlime_Generate_Header()
+	INetSlime_Generate_Header()
 
-	UNetSlime_DumpCppDefsForClass();
-
-	UNetSlime_ActorComponent_DumpCppDefsForClass();
+	INetSlimeActor_Generate_Header();
 
 	UFUNCTION(Category = "Net Slime", BlueprintCallable, Meta = (DisplayName = "IsOwningClient", ExpandEnumAsExecs = "ExecRoute"))
 	void K2_IsOwningClient(EIsResult& ExecRoute);

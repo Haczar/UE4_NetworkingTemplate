@@ -130,5 +130,3 @@ void ANT_PlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 
 	DOREPLIFETIME(ANT_PlayerController, bOwningClient_FrameworkInitialized);
 }
-
-//INetSlime_Generate_Implementation(ANT_PlayerController);
