@@ -2,9 +2,14 @@
 
 #pragma once
 
+// Unreal
 #include "CoreMinimal.h"
 #include "GameFramework/GameState.h"
+
+// UE Header Tool
 #include "NT_GameState.generated.h"
+
+
 
 /**
  * 

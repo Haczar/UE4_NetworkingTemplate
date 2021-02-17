@@ -104,12 +104,12 @@ public:
 };
 
 
+// Interface
 
 UINTERFACE(MinimalAPI)
 class UNetSlime : public UInterface
 {
 	GENERATED_BODY()
-
 };
 
 class NETWORKINGTEMPLATE_API INetSlime
@@ -118,15 +118,12 @@ class NETWORKINGTEMPLATE_API INetSlime
 
 public:
 
-
 	virtual bool               ServerSide    () = NULL;
 	virtual bool               ClientSide    () = NULL;
 	virtual ENetworkSystemRole ServerOrClient() = NULL;
 	virtual EServerType        ServerType    () = NULL;
 	virtual ENetworkMode       NetworkMode   () = NULL;
 };
-
-
 
 #define INetSlime_Generate_Header() \
 FORCEINLINE bool               ServerSide    () { return UNetSlime_Static::ServerSide    (GetWorld()); } \

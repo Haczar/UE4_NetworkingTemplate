@@ -37,13 +37,9 @@ class NETWORKINGTEMPLATE_API ANT_PlayerController : public APlayerController, pu
 
 public:
 
-	INetSlime_Generate_Header()
-
+	// Net Slime.
+	INetSlime_Generate_Header();
 	INetSlimeActor_Generate_Header();
-
-	UFUNCTION(Category = "Net Slime", BlueprintCallable, Meta = (DisplayName = "IsOwningClient", ExpandEnumAsExecs = "ExecRoute"))
-	void K2_IsOwningClient(EIsResult& ExecRoute);
-
 
 	ANT_PlayerController();
 

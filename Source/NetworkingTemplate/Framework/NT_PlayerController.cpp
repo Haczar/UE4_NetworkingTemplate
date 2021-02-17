@@ -18,21 +18,21 @@
 
 // Public
 
-void ANT_PlayerController::K2_IsOwningClient(EIsResult& ExecRoute)
-{ 
-	if (IsOwningClient()) 
-	{ 
-		ExecRoute = EIsResult::Yes; 
-
-		return;
-	} 
-	else 
-	{ 
-		ExecRoute = EIsResult::No; 
-
-		return;
-	} 
-}
+//void ANT_PlayerController::K2_IsOwningClient(EIsResult& ExecRoute)
+//{ 
+//	if (IsOwningClient()) 
+//	{ 
+//		ExecRoute = EIsResult::Yes; 
+//
+//		return;
+//	} 
+//	else 
+//	{ 
+//		ExecRoute = EIsResult::No; 
+//
+//		return;
+//	} 
+//}
 
 ANT_PlayerController::ANT_PlayerController()
 {
@@ -99,8 +99,10 @@ bool ANT_PlayerController::CanRestartPlayer()
 
 //void ANT_PlayerController::OnPossess(APawn* aPawn)
 //{
-//	if (UNetSlime_Static::K2_ServerSide(GetWorld()))
+//	if (ServerSide())
 //	{
+//		UE_LOG(LogTemp, Log, TEXT("NT PlayerController: OnPosses"));
+//
 //
 //	}
 //}
