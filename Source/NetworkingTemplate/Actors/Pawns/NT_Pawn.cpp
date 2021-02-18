@@ -40,15 +40,15 @@ void ANT_Pawn::ServerRPC_Reliable_NotifyClientPawnReady_Implementation()
 	On_PawnReady.Broadcast();
 }
 
-void ANT_Pawn::PossessedBy(AController* NewController)
+void ANT_Pawn::PossessedBy(AController* _newController)
 {
 	NetLog(TEXT("Pawn possessed."));
 
-	SetOwner(NewController);
+	SetOwner(_newController);
 
 	AController* const OldController = Controller;
 
-	Controller = NewController;
+	Controller = _newController;
 
 	ForceNetUpdate();
 
@@ -71,10 +71,10 @@ void ANT_Pawn::PossessedBy(AController* NewController)
 		CopyRemoteRoleFrom(GetDefault<APawn>());
 	}
 
-	Cast<ANT_PlayerController>(NewController)->On_PawnPossessed.AddDynamic(this, &ANT_Pawn::Controller_PawnPossessed);
+	Cast<ANT_PlayerController>(_newController)->On_PawnPossessed.AddDynamic(this, &ANT_Pawn::Controller_PawnPossessed);
 
 	// dispatch Blueprint event if necessary
-	if (OldController != NewController)
+	if (OldController != _newController)
 	{
 		ReceivePossessed(Controller);
 
@@ -86,9 +86,9 @@ void ANT_Pawn::PossessedBy(AController* NewController)
 }
 
 // Called to bind functionality to input
-void ANT_Pawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void ANT_Pawn::SetupPlayerInputComponent(UInputComponent* _playerInputComponent)
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	Super::SetupPlayerInputComponent(_playerInputComponent);
 }
 
 
@@ -103,9 +103,9 @@ void ANT_Pawn::BeginPlay()
 }
 
 // Called every frame
-void ANT_Pawn::Tick(float DeltaTime)
+void ANT_Pawn::Tick(float _deltaTime)
 {
-	Super::Tick(DeltaTime);
+	Super::Tick(_deltaTime);
 
 }
 

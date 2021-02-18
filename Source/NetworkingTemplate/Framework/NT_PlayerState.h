@@ -51,7 +51,7 @@ public:
 	virtual void BeginPlay() override;
 
 	// This gets called on replication of the player state (client side only).
-	virtual void ClientInitialize(class AController* C) override;
+	virtual void ClientInitialize(class AController* _newOwner) override;
 
 	virtual void PostInitializeComponents() override;
 

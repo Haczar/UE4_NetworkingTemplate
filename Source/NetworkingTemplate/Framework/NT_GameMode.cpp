@@ -108,18 +108,18 @@ void ANT_GameMode::StartPlay()
 	//Super::StartPlay();
 }
 
-void ANT_GameMode::PostLogin(APlayerController* NewPlayer)
+void ANT_GameMode::PostLogin(APlayerController* _newPlayer)
 {
 	//Super::PostLogin()
 
-	UWorld* World = GetWorld();
+	UWorld* world = GetWorld();
 
-	// update player count
-	if (MustSpectate(NewPlayer))
+	// Update player count
+	if (MustSpectate(_newPlayer))
 	{
 		NumSpectators++;
 	}
-	else if (World->IsInSeamlessTravel() || NewPlayer->HasClientLoadedCurrentWorld())
+	else if (world->IsInSeamlessTravel() || _newPlayer->HasClientLoadedCurrentWorld())
 	{
 		NumPlayers++;
 	}
@@ -128,45 +128,48 @@ void ANT_GameMode::PostLogin(APlayerController* NewPlayer)
 		NumTravellingPlayers++;
 	}
 
-	// save network address for re-associating with reconnecting player, after stripping out port number
-	FString Address = NewPlayer->GetPlayerNetworkAddress();
-	int32 pos = Address.Find(TEXT(":"), ESearchCase::CaseSensitive);
-	NewPlayer->PlayerState->SavedNetworkAddress = (pos > 0) ? Address.Left(pos) : Address;
+	// Save network address for re-associating with reconnecting player, after stripping out port number
+	FString address = _newPlayer->GetPlayerNetworkAddress();
 
-	// check if this player is reconnecting and already has PlayerState
-	FindInactivePlayer(NewPlayer);
+	int32 pos = address.Find(TEXT(":"), ESearchCase::CaseSensitive);
+
+	_newPlayer->PlayerState->SavedNetworkAddress = (pos > 0) ? address.Left(pos) : address;
+
+	// Check if this player is reconnecting and already has PlayerState
+	FindInactivePlayer(_newPlayer);
 
 	// Runs shared initialization that can happen during seamless travel as well
 
-	GenericPlayerInitialization(NewPlayer);
+	GenericPlayerInitialization(_newPlayer);
 
 	// Perform initialization that only happens on initially joining a server
 
-	NewPlayer->ClientCapBandwidth(NewPlayer->Player->CurrentNetSpeed);
+	_newPlayer->ClientCapBandwidth(_newPlayer->Player->CurrentNetSpeed);
 
-	if (MustSpectate(NewPlayer))
+	if (MustSpectate(_newPlayer))
 	{
-		NewPlayer->ClientGotoState(NAME_Spectating);
+		_newPlayer->ClientGotoState(NAME_Spectating);
 	}
 	else
 	{
 		// If NewPlayer is not only a spectator and has a valid ID, add him as a user to the replay.
-		const FUniqueNetIdRepl& NewPlayerStateUniqueId = NewPlayer->PlayerState->GetUniqueId();
-		if (NewPlayerStateUniqueId.IsValid())
+		const FUniqueNetIdRepl& newPlayerStateUniqueId = _newPlayer->PlayerState->GetUniqueId();
+
+		if (newPlayerStateUniqueId.IsValid())
 		{
-			GetGameInstance()->AddUserToReplay(NewPlayerStateUniqueId.ToString());
+			GetGameInstance()->AddUserToReplay(newPlayerStateUniqueId.ToString());
 		}
 	}
 
 	if (GameSession)
 	{
-		GameSession->PostLogin(NewPlayer);
+		GameSession->PostLogin(_newPlayer);
 	}
 
 	// Notify Blueprints that a new player has logged in.  Calling it here, because this is the first time that the PlayerController can take RPCs
-	K2_PostLogin(NewPlayer);
+	K2_PostLogin(_newPlayer);
 
-	FGameModeEvents::GameModePostLoginEvent.Broadcast(this, NewPlayer);
+	FGameModeEvents::GameModePostLoginEvent.Broadcast(this, _newPlayer);
 
-	Cast<ANT_PlayerController>(NewPlayer)->On_OwningClient_PostLogin.AddDynamic(this, &ANT_GameMode::Server_OwningClient_PostLogin);
+	Cast<ANT_PlayerController>(_newPlayer)->On_OwningClient_PostLogin.AddDynamic(this, &ANT_GameMode::Server_OwningClient_PostLogin);
 }

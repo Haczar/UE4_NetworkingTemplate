@@ -21,9 +21,9 @@ void ANT_Actor::BeginPlay()
 }
 
 // Called every frame
-void ANT_Actor::Tick(float DeltaTime)
+void ANT_Actor::Tick(float _deltaTime)
 {
-	Super::Tick(DeltaTime);
+	Super::Tick(_deltaTime);
 
 }
 

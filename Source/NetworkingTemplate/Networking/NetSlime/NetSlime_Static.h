@@ -68,7 +68,13 @@ NETWORKINGTEMPLATE_API DECLARE_LOG_CATEGORY_EXTERN(NetSlime, Log, All);
 
 
 /**
- * NetSlime: Just a bunch of ease of use utilities for 
+ * NetSlime: Static Utility library for gameplay-level network related functionality.
+ * 
+ * By default all of these are exposed to blueprints.
+ * 
+ * For use in cpp, use the INetSlime_Generate_Header() in the class that inherits from UObject at least. 
+ * 
+ * For interface support add INetSlime to the class desired. 
  */
 UCLASS()
 class NETWORKINGTEMPLATE_API UNetSlime_Static : public UStatic_Util

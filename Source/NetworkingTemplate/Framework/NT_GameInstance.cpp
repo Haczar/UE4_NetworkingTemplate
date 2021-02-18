@@ -79,8 +79,6 @@ void UNT_GameInstance::Local_ClearFrameworkState()
 	frameworkState          = EFramework_State::Uninitialized;
 }
 
-
-
 void UNT_GameInstance::Local_ProcessFrameworkState()
 {
 	switch (frameworkState)
@@ -117,3 +115,4 @@ ANT_PlayerController* UNT_GameInstance::Local_GetInstanceUser()
 {
 	return Cast<ANT_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 }
+

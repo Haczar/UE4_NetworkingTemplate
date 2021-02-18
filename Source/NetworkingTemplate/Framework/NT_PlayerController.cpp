@@ -138,31 +138,31 @@ bool ANT_PlayerController::CanRestartPlayer()
 
 // AController
 
-void ANT_PlayerController::OnPossess(APawn* PawnToPossess)
+void ANT_PlayerController::OnPossess(APawn* _pawnToPossess)
 {
 	//Super::OnPossess(PawnToPossess);
 
-	if ( PawnToPossess != NULL && (PlayerState == NULL || !PlayerState->IsOnlyASpectator()) )
+	if ( _pawnToPossess != NULL && (PlayerState == NULL || !PlayerState->IsOnlyASpectator()) )
 	{
 		// ====================================================================Originally: Super::OnPossess(PawnToPossess);
-			const bool bNewPawn = (GetPawn() != PawnToPossess);
+			const bool bNewPawn = (GetPawn() != _pawnToPossess);
 
 			if (GetPawn() && bNewPawn)
 			{
 				UnPossess();
 			}
 
-			if (PawnToPossess->Controller != NULL)
+			if (_pawnToPossess->Controller != NULL)
 			{
-				PawnToPossess->Controller->UnPossess();
+				_pawnToPossess->Controller->UnPossess();
 			}
 
-			PawnToPossess->PossessedBy(this);
+			_pawnToPossess->PossessedBy(this);
 
 			// update rotation to match possessed pawn's rotation
-			SetControlRotation( PawnToPossess->GetActorRotation() );
+			SetControlRotation( _pawnToPossess->GetActorRotation() );
 
-			SetPawn(PawnToPossess);
+			SetPawn(_pawnToPossess);
 
 			check(GetPawn() != NULL);
 
@@ -194,7 +194,7 @@ void ANT_PlayerController::OnPossess(APawn* PawnToPossess)
 
 		if (ServerSide())
 		{
-			Cast<ANT_Pawn>(PawnToPossess)->On_PawnReady.AddDynamic(this, &ANT_PlayerController::PawnReady);
+			Cast<ANT_Pawn>(_pawnToPossess)->On_PawnReady.AddDynamic(this, &ANT_PlayerController::PawnReady);
 
 			On_PawnPossessed.Broadcast();
 		}

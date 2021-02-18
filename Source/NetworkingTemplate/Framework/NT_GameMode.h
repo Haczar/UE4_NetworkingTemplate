@@ -15,7 +15,6 @@
 
 
 
-// Pawn.h
 class APawn;
 
 
@@ -34,6 +33,7 @@ public:
 
 
 	ANT_GameMode();
+
 
 protected:
 
@@ -62,7 +62,7 @@ protected:
 
 	virtual void StartPlay() override;
 
-	virtual void PostLogin(APlayerController* NewPlayer) override;
+	virtual void PostLogin(APlayerController* _newPlayer) override;
 };
 
 

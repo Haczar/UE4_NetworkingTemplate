@@ -21,16 +21,16 @@ void ANT_Character::BeginPlay()
 }
 
 // Called every frame
-void ANT_Character::Tick(float DeltaTime)
+void ANT_Character::Tick(float _deltaTime)
 {
-	Super::Tick(DeltaTime);
+	Super::Tick(_deltaTime);
 
 }
 
 // Called to bind functionality to input
-void ANT_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void ANT_Character::SetupPlayerInputComponent(UInputComponent* _playerInputComponent)
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	Super::SetupPlayerInputComponent(_playerInputComponent);
 
 }
 

@@ -109,7 +109,7 @@ public:
 
 // AController
 
-	virtual void OnPossess(APawn* aPawn) override;
+	virtual void OnPossess(APawn* _aPawn) override;
 
 // AActor
 public:
