@@ -3,7 +3,6 @@
 // Parent
 #include "Actors/Pawns/NT_Pawn.h"
 
-
 // NT
 #include "Framework/NT_PlayerController.h"
 
@@ -18,10 +17,6 @@ ANT_Pawn::ANT_Pawn()
 	PrimaryActorTick.bCanEverTick = true;
 
 }
-
-
-
-// APawn
 
 void ANT_Pawn::Controller_PawnPossessed()
 {
@@ -39,6 +34,10 @@ void ANT_Pawn::ServerRPC_Reliable_NotifyClientPawnReady_Implementation()
 
 	On_PawnReady.Broadcast();
 }
+
+
+
+// APawn
 
 void ANT_Pawn::PossessedBy(AController* _newController)
 {
@@ -108,5 +107,4 @@ void ANT_Pawn::Tick(float _deltaTime)
 	Super::Tick(_deltaTime);
 
 }
-
 

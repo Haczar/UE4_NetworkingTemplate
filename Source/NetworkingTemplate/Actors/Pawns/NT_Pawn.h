@@ -8,7 +8,6 @@
 
 // NetSlime
 #include "NetSlime/NetSlime_Static.h"
-#include "NetSlime/NetSlime_Actor.h"
 
 // UE Header Tool
 #include "NT_Pawn.generated.h"
@@ -60,6 +59,7 @@ public:
 // AActor
 
 protected:
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 

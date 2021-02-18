@@ -9,9 +9,9 @@
 #include "GameFramework/PawnMovementComponent.h"
 
 // NT
-
 #include "NT_GameInstance.h"
 #include "Actors/Pawns/NT_Pawn.h"
+#include "Actors/Pawns/Characters/NT_Character.h"
 
 
 
@@ -194,7 +194,14 @@ void ANT_PlayerController::OnPossess(APawn* _pawnToPossess)
 
 		if (ServerSide())
 		{
-			Cast<ANT_Pawn>(_pawnToPossess)->On_PawnReady.AddDynamic(this, &ANT_PlayerController::PawnReady);
+			if (_pawnToPossess->IsA(ANT_Pawn::StaticClass()))
+			{
+				Cast<ANT_Pawn>(_pawnToPossess)->On_PawnReady.AddDynamic(this, &ANT_PlayerController::PawnReady);
+			}
+			else if (_pawnToPossess->IsA(ANT_Character::StaticClass()))
+			{
+				Cast<ANT_Character>(_pawnToPossess)->On_PawnReady.AddDynamic(this, &ANT_PlayerController::PawnReady);
+			}
 
 			On_PawnPossessed.Broadcast();
 		}
