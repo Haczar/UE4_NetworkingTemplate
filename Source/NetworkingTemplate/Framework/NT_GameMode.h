@@ -32,6 +32,7 @@ public:
 
 	INetSlime_Generate_Header();
 
+
 	ANT_GameMode();
 
 protected:

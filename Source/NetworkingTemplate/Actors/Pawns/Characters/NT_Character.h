@@ -16,24 +16,13 @@
 
 
 UCLASS()
-class NETWORKINGTEMPLATE_API ANT_Character : public ACharacter, public INetSlime, public INetSlimeActor
+class NETWORKINGTEMPLATE_API ANT_Character : public ACharacter, public INetSlime
 {
 	GENERATED_BODY()
 
 public:
 
 	INetSlime_Generate_Header();
-	
-	INetSlimeActor_Generate_Header();
-
-	// Non-Macroable.
-	UFUNCTION(Category = "Net Slime", BlueprintCallable, Meta = (DisplayName = "Server Authorized", ExpandEnumAsExecs = "ExecRoute"))
-	void K2_ServerAuthorized(EIsResult& ExecRoute) { if (ServerAuthorized()) 
-	{ ExecRoute = EIsResult::Yes; return; } else { ExecRoute = EIsResult::No; return; } }
-	UFUNCTION(Category = "Net Slime", BlueprintCallable, Meta = (DisplayName = "Is Owning Client", ExpandEnumAsExecs = "ExecRoute"))
-	void K2_IsOwningClient  (EIsResult& ExecRoute) { if (IsOwningClient  ()) 
-	{ ExecRoute = EIsResult::Yes; return; } else { ExecRoute = EIsResult::No; return; } }
-
 
 
 	// Sets default values for this character's properties

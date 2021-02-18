@@ -26,6 +26,7 @@ public:
 
 	INetSlime_Generate_Header();
 
+
 	ANT_PlayerState();
 
 protected:

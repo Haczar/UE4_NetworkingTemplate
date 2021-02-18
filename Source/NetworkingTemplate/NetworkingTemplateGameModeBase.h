@@ -2,9 +2,14 @@
 
 #pragma once
 
+// Unreal
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+
+// UHT
 #include "NetworkingTemplateGameModeBase.generated.h"
+
+
 
 /**
  * 

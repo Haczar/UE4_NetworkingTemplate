@@ -38,7 +38,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDelegate_PlayerReady);
  * 
  */
 UCLASS()
-class NETWORKINGTEMPLATE_API ANT_PlayerController : public APlayerController, public INetSlime, public INetSlimeActor
+class NETWORKINGTEMPLATE_API ANT_PlayerController : public APlayerController, public INetSlime
 {
 	GENERATED_BODY()
 
@@ -47,16 +47,6 @@ public:
 	// Net Slime.
 
 	INetSlime_Generate_Header();
-
-	INetSlimeActor_Generate_Header();
-
-	// Non-Macroable.
-	UFUNCTION(Category = "Net Slime", BlueprintCallable, Meta = (DisplayName = "Server Authorized", ExpandEnumAsExecs = "ExecRoute"))
-	void K2_ServerAuthorized(EIsResult& ExecRoute) 
-	{ if (ServerAuthorized()) { ExecRoute = EIsResult::Yes; return; } else { ExecRoute = EIsResult::No; return; } }
-	UFUNCTION(Category = "Net Slime", BlueprintCallable, Meta = (DisplayName = "Is Owning Client", ExpandEnumAsExecs = "ExecRoute"))
-	void K2_IsOwningClient  (EIsResult& ExecRoute) 
-	{ if (IsOwningClient  ()) { ExecRoute = EIsResult::Yes; return; } else { ExecRoute = EIsResult::No; return; } }
 
 
 	ANT_PlayerController();

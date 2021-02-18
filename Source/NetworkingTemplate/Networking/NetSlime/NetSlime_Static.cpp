@@ -3,6 +3,8 @@
 // Parent Header
 #include "NetSlime_Static.h"
 
+// Unreal
+#include "Components/ActorComponent.h"
 
 
 
@@ -10,10 +12,127 @@ DEFINE_LOG_CATEGORY(NetSlime);
 
 
 
+// Private
+
+FString GetNetworkModeStr(const UObject* _context)
+{
+	FString mode;
+
+	switch (UNetSlime_Static::NetworkMode(_context))
+	{
+		case ENetworkMode::Standalone:
+		{
+			mode = TEXT("Standalone");
+
+			break;
+		}
+		case ENetworkMode::ListenServer:
+		{
+			mode = TEXT("ListenServer");
+
+			break;
+		}
+		case ENetworkMode::DedicatedServer:
+		{
+			mode = TEXT("DedicatedServer");
+
+			break;
+		}
+		case ENetworkMode::Client:
+		{
+			mode = TEXT("Client");
+
+			break;
+		}
+	}
+
+	return mode;
+}
+
 
 // Public
 
-bool UNetSlime_Static::ServerSide(UObject* _worldContext)
+void UNetSlime_Static::Log(const UObject* _context, FString _message)
+{
+	FString mode = GetNetworkModeStr(_context);
+
+	const AActor*            actorRef  = nullptr;
+	const APlayerController* playerRef = nullptr;
+
+	if (_context->GetClass()->IsChildOf(AActor::StaticClass()))
+	{
+		actorRef  = Cast<AActor>(_context);
+	}
+	else if (_context->GetClass()->IsChildOf(UActorComponent::StaticClass()))
+	{
+		const UActorComponent* compActor = Cast<UActorComponent>(_context);
+
+		actorRef = compActor->GetOwner();
+	}
+
+	FString actorLevel;
+
+	if (actorRef)
+	{
+		if (! actorRef->IsA(APlayerController::StaticClass()))
+		{
+			if (actorRef->HasNetOwner())
+			{
+				playerRef = actorRef->GetOwner()->GetNetOwningPlayer()->GetPlayerController(_context->GetWorld());
+			}
+		}
+		else
+		{
+			playerRef = Cast<APlayerController>(actorRef);
+		}
+
+		ENetRole netRoleInstance   = ENetRole::ROLE_None;
+		ENetRole netRoleRemoteInst = ENetRole::ROLE_None;
+
+		if (playerRef != nullptr)
+		{
+			netRoleInstance   = playerRef->GetLocalRole ();
+			netRoleRemoteInst = playerRef->GetRemoteRole();
+		}
+		else
+		{
+			netRoleInstance   = actorRef->GetLocalRole ();
+			netRoleRemoteInst = actorRef->GetRemoteRole();
+		}
+
+		
+
+		if (actorRef->HasNetOwner() && IsOwningClient(actorRef))
+		{
+			actorLevel = TEXT("Owning Client");
+		}
+		else if (ServerAuthorized(actorRef))
+		{
+			actorLevel = TEXT("Server Authorized");
+		}
+		else
+		{
+			actorLevel = TEXT("No Authority");
+		}
+	}
+	else
+	{
+		actorLevel = TEXT("Local");
+	}
+
+	mode       = FString::Printf(TEXT("%-16s"), *mode);
+	actorLevel = FString::Printf(TEXT("%-18s"), *actorLevel);
+
+	FString name = FString::Printf(TEXT("%-30s"), *_context->GetName());
+
+	SET_WARN_COLOR(COLOR_PURPLE)
+
+		UE_LOG(NetSlime, Log, TEXT("%s %s %s : %s"), *mode, *actorLevel, *name, *_message);
+
+	CLEAR_WARN_COLOR()
+}
+
+bool UNetSlime_Static::ServerSide(const UObject* _worldContext)
 {
 	UWorld* WorldRef = GEngine->GetWorldFromContextObject(_worldContext, EGetWorldErrorMode::ReturnNull);
 
@@ -27,7 +146,7 @@ bool UNetSlime_Static::ServerSide(UObject* _worldContext)
 	}
 }
 
-bool UNetSlime_Static::ClientSide(UObject* _worldContext)
+bool UNetSlime_Static::ClientSide(const UObject* _worldContext)
 {
 	UWorld* WorldRef = GEngine->GetWorldFromContextObject(_worldContext, EGetWorldErrorMode::ReturnNull);
 
@@ -41,7 +160,7 @@ bool UNetSlime_Static::ClientSide(UObject* _worldContext)
 	}
 }
 
-ENetworkSystemRole UNetSlime_Static::ServerOrClient(UObject* _worldContext)
+ENetworkSystemRole UNetSlime_Static::ServerOrClient(const UObject* _worldContext)
 {
 	UWorld* WorldRef = GEngine->GetWorldFromContextObject(_worldContext, EGetWorldErrorMode::ReturnNull);
 
@@ -55,7 +174,7 @@ ENetworkSystemRole UNetSlime_Static::ServerOrClient(UObject* _worldContext)
 	}
 }
 
-EServerType UNetSlime_Static::ServerType(UObject* _worldContext)
+EServerType UNetSlime_Static::ServerType(const UObject* _worldContext)
 {
 	UWorld* WorldRef = GEngine->GetWorldFromContextObject(_worldContext, EGetWorldErrorMode::ReturnNull);
 
@@ -80,7 +199,7 @@ EServerType UNetSlime_Static::ServerType(UObject* _worldContext)
 	}
 }
 
-ENetworkMode UNetSlime_Static::NetworkMode(UObject* _worldContext)
+ENetworkMode UNetSlime_Static::NetworkMode(const UObject* _worldContext)
 {
 	UWorld* WorldRef = GEngine->GetWorldFromContextObject(_worldContext, EGetWorldErrorMode::ReturnNull);
 
@@ -112,7 +231,7 @@ ENetworkMode UNetSlime_Static::NetworkMode(UObject* _worldContext)
 	}
 }
 
-void UNetSlime_Static::K2_ServerSide(UObject* WorldContextObject, EContinue& ExecRoute)
+void UNetSlime_Static::K2_ServerSide(const UObject* WorldContextObject, EContinue& ExecRoute)
 {
 	UWorld* WorldRef = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::ReturnNull);
 
@@ -130,7 +249,7 @@ void UNetSlime_Static::K2_ServerSide(UObject* WorldContextObject, EContinue& Exe
 	}
 }
 
-void UNetSlime_Static::K2_ClientSide(UObject* _worldContextObject, EContinue& _execRoute)
+void UNetSlime_Static::K2_ClientSide(const UObject* _worldContextObject, EContinue& _execRoute)
 {
 	UWorld* WorldRef = GEngine->GetWorldFromContextObject(_worldContextObject, EGetWorldErrorMode::ReturnNull);
 
@@ -149,7 +268,7 @@ void UNetSlime_Static::K2_ClientSide(UObject* _worldContextObject, EContinue& _e
 	}
 }
 
-void UNetSlime_Static::K2_ServerOrClient(UObject* WorldContextObject, ENetworkSystemRole& ExecRoute)
+void UNetSlime_Static::K2_ServerOrClient(const UObject* WorldContextObject, ENetworkSystemRole& ExecRoute)
 {
 	UWorld* WorldRef = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::ReturnNull);
 
@@ -167,7 +286,7 @@ void UNetSlime_Static::K2_ServerOrClient(UObject* WorldContextObject, ENetworkSy
 	}
 }
 
-void UNetSlime_Static::K2_ServerType(UObject* WorldContextObject, EServerType& ExecRoute)
+void UNetSlime_Static::K2_ServerType(const UObject* WorldContextObject, EServerType& ExecRoute)
 {
 	UWorld* WorldRef = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::ReturnNull);
 
@@ -198,7 +317,7 @@ void UNetSlime_Static::K2_ServerType(UObject* WorldContextObject, EServerType& E
 	}
 }
 
-void UNetSlime_Static::K2_NetworkMode(UObject* WorldContextObject, ENetworkMode& ExecRoute)
+void UNetSlime_Static::K2_NetworkMode(const UObject* WorldContextObject, ENetworkMode& ExecRoute)
 {
 	UWorld* WorldRef = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::ReturnNull);
 
@@ -231,51 +350,240 @@ void UNetSlime_Static::K2_NetworkMode(UObject* WorldContextObject, ENetworkMode&
 	}
 }
 
-void UNetSlime_Static::Log(UObject* _context, FString _message)
+
+
+// AActor Related
+
+bool UNetSlime_Static::ServerAuthorized(const UObject* _context)
 {
-	FString mode;
+	ENetMode networkInstance = _context->GetWorld()->GetNetMode();
 
-	switch (NetworkMode(_context))
+	FString mode = GetNetworkModeStr(_context);
+
+	const AActor*            actorRef  = nullptr;
+	const APlayerController* playerRef = nullptr;
+
+	if (_context->IsA(AActor::StaticClass()))
 	{
-		case ENetworkMode::Standalone:
-		{
-			mode = TEXT("Standalone     ");
+		actorRef = Cast<AActor>(_context);
+	}
+	else if (_context->GetClass()->IsChildOf(UActorComponent::StaticClass()))
+	{
+		const UActorComponent* compActor = Cast<UActorComponent>(_context);
 
-			break;
-		}
-		case ENetworkMode::ListenServer:
-		{
-			mode = TEXT("ListenServer   ");
-
-			//mode += TEXT(" Role: ");
-
-			break;
-		}
-		case ENetworkMode::DedicatedServer:
-		{
-			mode = TEXT("DedicatedServer");
-
-			break;
-		}
-		case ENetworkMode::Client:
-		{
-			mode = TEXT("Client         ");
-
-			break;
-		}
+		actorRef = compActor->GetOwner();
 	}
 
-	_message = FString::Printf(TEXT("%-60s"), *_message);
+	if (actorRef == nullptr)
+	{
+		SET_WARN_COLOR(COLOR_PURPLE)
 
-	SET_WARN_COLOR(COLOR_PURPLE)
+			FString message = TEXT("Must be an actor to use ServerAuthorized check.");
 
-	UE_LOG(NetSlime, Log, TEXT("%s:  %s in [%s]"  ), *mode, *_message, *_context->GetName());
+		UE_LOG(NetSlime, Error, TEXT("%s:  %s in [%s]"), *mode, *message, *_context->GetName());
 
-	CLEAR_WARN_COLOR()
+		CLEAR_WARN_COLOR()
+
+			return false;
+	}
+
+	if (! actorRef->IsA(APlayerController::StaticClass()))
+	{
+		if (actorRef->GetOwner())
+		{
+			playerRef = actorRef->GetOwner()->GetNetOwningPlayer()->GetPlayerController(_context->GetWorld());
+		}	
+	}
+	else
+	{
+		playerRef = Cast<APlayerController>(_context);
+	}
+
+	ENetRole netRoleInstance   = ENetRole::ROLE_None;
+	ENetRole netRoleRemoteInst = ENetRole::ROLE_None;
+
+	if (playerRef != nullptr)
+	{
+		netRoleInstance   = playerRef->GetLocalRole ();
+		netRoleRemoteInst = playerRef->GetRemoteRole();
+	}
+	else
+	{
+		netRoleInstance   = actorRef->GetLocalRole ();
+		netRoleRemoteInst = actorRef->GetRemoteRole();
+	}
+
+	switch (networkInstance)
+	{
+		case NM_Client:
+		{
+			if (netRoleInstance == ROLE_AutonomousProxy)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		case NM_ListenServer:
+		{
+			return true;
+		}
+		case NM_DedicatedServer:
+		{
+			return true;
+		}
+		case NM_Standalone:
+		{
+			return true;
+		}
+		default:
+		{
+			return false;
+		}
+	}
 }
 
-
-void UNetSlime_Static::K2_Log(UObject* _context, FString _messsage)
+bool UNetSlime_Static::IsOwningClient(const UObject* _context)
 {
-	Log(_context, _messsage);
+	ENetMode networkInstance = _context->GetWorld()->GetNetMode();
+
+	FString mode = GetNetworkModeStr(_context);
+
+	const AActor*            actorRef  = nullptr;
+	const APlayerController* playerRef = nullptr;
+
+	if (_context->IsA(AActor::StaticClass()))
+	{
+		actorRef = Cast<AActor>(_context);
+	}
+	else if (_context->GetClass()->IsChildOf(UActorComponent::StaticClass()))
+	{
+		const UActorComponent* compActor = Cast<UActorComponent>(_context);
+
+		actorRef = compActor->GetOwner();
+	}
+
+	if (actorRef == nullptr)
+	{
+		SET_WARN_COLOR(COLOR_PURPLE)
+
+			FString message = TEXT("Must be an actor to use IsOwningClient check.");
+
+		UE_LOG(NetSlime, Error, TEXT("%s:  %s in [%s]"), *mode, *message, *_context->GetName());
+
+		CLEAR_WARN_COLOR()
+
+			return false;
+	}
+
+	if (!actorRef->HasNetOwner())
+	{
+		SET_WARN_COLOR(COLOR_PURPLE)
+
+			FString message = TEXT("Must have net owner in order to determine if owning client.");
+
+			UE_LOG(NetSlime, Error, TEXT("%s:  %s in [%s]"), *mode, *message, *_context->GetName());
+
+		CLEAR_WARN_COLOR()
+
+		return false;
+	}
+
+	if (! actorRef->IsA(APlayerController::StaticClass()))
+	{
+		playerRef = actorRef->GetOwner()->GetNetOwningPlayer()->GetPlayerController(_context->GetWorld());
+	}
+	else
+	{
+		playerRef = Cast<APlayerController>(_context);
+	}
+
+	ENetRole netRoleInstance   = ENetRole::ROLE_None;
+	ENetRole netRoleRemoteInst = ENetRole::ROLE_None;
+
+	if (playerRef != nullptr)
+	{
+		netRoleInstance   = playerRef->GetLocalRole ();
+		netRoleRemoteInst = playerRef->GetRemoteRole();
+	}
+	else
+	{
+		netRoleInstance   = actorRef->GetLocalRole ();
+		netRoleRemoteInst = actorRef->GetRemoteRole();
+	}
+
+	switch (networkInstance)
+	{
+		case NM_Client:
+		{
+			if (netRoleInstance == ROLE_AutonomousProxy)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		case NM_ListenServer:
+		{
+			if (netRoleInstance == ROLE_Authority)
+			{
+				if (netRoleRemoteInst != ROLE_AutonomousProxy)
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+			else
+			{
+				return false;
+			}
+		}
+		case NM_Standalone:
+		{
+			return true;
+		}
+		default:
+		{
+			return false;
+		}
+	}
+}
+
+void UNetSlime_Static::K2_ServerAuthorized(const UObject* _context, EIsResult& _execRoute)
+{
+	if (ServerAuthorized(_context))
+	{
+		_execRoute = EIsResult::Yes;
+
+		return;
+	}
+	else
+	{
+		_execRoute = EIsResult::No;
+
+		return;
+	}
+}
+
+void UNetSlime_Static::K2_IsOwningClient(const UObject* _context, EIsResult& _execRoute)
+{
+	if (IsOwningClient(_context))
+	{
+		_execRoute = EIsResult::Yes;
+
+		return;
+	}
+	else
+	{
+		_execRoute = EIsResult::No;
+
+		return;
+	}
 }

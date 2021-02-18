@@ -29,9 +29,16 @@ public:
 
 	static bool ServerAuthorized_Static(AActor* _contextWithOwner);
 	static bool IsOwningClient_Static  (AActor* _contextWithOwner);
+	static void Log_Static             (AActor* _contextWithOwner, FString _message);
 
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Net Slime", Meta = (DisplayName = "Server Authorized"))
 	bool ServerAuthorized();
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Net Slime", Meta = (DisplayName = "Is Owning Client"))
 	bool IsOwningClient();
+
+	UFUNCTION(BlueprintCallable, Category = "Net Slime", Meta = (DisplayName = "NetLogA"))
+	void Log(FString _message);
 
 	// Has access to server RPCs. Does not care if your not the owner.
 	UFUNCTION(Category = "Net Slime", BlueprintCallable, Meta = (DisplayName = "Server Authorized", ExpandEnumAsExecs = "ExecRoute"))
@@ -45,6 +52,7 @@ public:
 
 
 // Interface
+// If you need to deal with a large set of objects and have access to net slime actor info generically.
 
 UINTERFACE(MinimalAPI)
 class UNetSlimeActor : public UInterface
@@ -59,10 +67,15 @@ class NETWORKINGTEMPLATE_API INetSlimeActor
 
 public:
 
-	virtual bool ServerAuthorized() = NULL;
-	virtual bool IsOwningClient  () = NULL;
+	virtual bool ServerAuthorized()                 = NULL;
+	virtual bool IsOwningClient  ()                 = NULL;
+	virtual void NetLogA         (FString _message) = NULL;
 };
 
+
+
+// Quick way to generate functions for anything that wants easy non actor component access to netSlime actor info.
 #define INetSlimeActor_Generate_Header() \
-FORCEINLINE bool ServerAuthorized() { return UNetSlime_Actor::ServerAuthorized_Static(this); } \
-FORCEINLINE bool IsOwningClient  () { return UNetSlime_Actor::IsOwningClient_Static  (this); } 
+FORCEINLINE bool ServerAuthorized()                 { return UNetSlime_Actor::ServerAuthorized_Static(this);           } \
+FORCEINLINE bool IsOwningClient  ()                 { return UNetSlime_Actor::IsOwningClient_Static  (this);           } \
+FORCEINLINE void NetLogA         (FString _message) { return UNetSlime_Actor::Log_Static             (this, _message); }

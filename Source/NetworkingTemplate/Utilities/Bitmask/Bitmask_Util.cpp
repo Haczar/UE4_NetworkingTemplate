@@ -5,6 +5,7 @@
 #include "Engine/Engine.h"
 
 
+
 // Public
 bool UBitmask_Util::IsEqual_Pure(int32 _bitmaskToCheck, int32 _bitsToCheckFor)
 {
@@ -30,7 +31,6 @@ bool UBitmask_Util::IsSet_Pure(int32 _bitmaskToCheck, int32 _bitsToCheckFor)
 	{
 		return false;
 	}
-
 }
 
 int32 UBitmask_Util::Set_Pure(int32 _bitmaskToSet, int32 _bitsToAdd)
@@ -80,3 +80,4 @@ void UBitmask_Util::Remove(int32& _bitmaskToSet, int32 _bitsToRemove)
 {
 	_bitmaskToSet = Remove_Pure(_bitmaskToSet, _bitsToRemove);
 }
+

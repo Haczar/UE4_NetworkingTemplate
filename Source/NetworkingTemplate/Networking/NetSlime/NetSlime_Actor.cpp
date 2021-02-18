@@ -3,8 +3,6 @@
 // Parent Header
 #include "NetSlime_Actor.h"
 
-// Include
-
 // Unreal Engine
 #include "Engine/Engine.h"
 #include "Engine/World.h"
@@ -12,7 +10,8 @@
 #include "GameFramework/PlayerController.h"
 #include "Engine/Player.h"
 
-
+// NT
+#include "NetSlime_Static.h"
 
 
 
@@ -30,18 +29,22 @@ bool UNetSlime_Actor::ServerAuthorized_Static(AActor* _actor)
 {
 	ENetMode networkInstance = _actor->GetWorld()->GetNetMode();
 
-	if (!_actor->GetOwner()->HasNetOwner())
+	const APlayerController* playerRef = nullptr;
+
+	if (! _actor->IsA(APlayerController::StaticClass()))
 	{
-		UE_LOG(LogTemp, Error, TEXT("Must have net owner in order to determine if owning client."));
+		if (! _actor->GetOwner())
+		{
+			playerRef = _actor->GetOwner()->GetNetOwningPlayer()->GetPlayerController(_actor->GetWorld());
+		}	
+	}
+	else
+	{
+		playerRef = Cast<APlayerController>(_actor);
 	}
 
-	UWorld* worldRef = _actor->GetWorld();
-
-	const AActor*            actorRef  = _actor->GetOwner();
-	const APlayerController* playerRef = _actor->GetOwner()->GetNetOwningPlayer()->GetPlayerController(worldRef);
-
-	ENetRole netRoleInstance;
-	ENetRole netRoleRemoteInst;
+	ENetRole netRoleInstance   = ENetRole::ROLE_None;
+	ENetRole netRoleRemoteInst = ENetRole::ROLE_None;
 
 	if (playerRef != nullptr)
 	{
@@ -50,8 +53,74 @@ bool UNetSlime_Actor::ServerAuthorized_Static(AActor* _actor)
 	}
 	else
 	{
-		netRoleInstance   = actorRef->GetLocalRole ();
-		netRoleRemoteInst = actorRef->GetRemoteRole();
+		netRoleInstance   = _actor->GetLocalRole ();
+		netRoleRemoteInst = _actor->GetRemoteRole();
+	}
+
+	switch (networkInstance)
+	{
+		case NM_Client:
+		{
+			if (netRoleInstance == ROLE_AutonomousProxy)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		case NM_ListenServer:
+		{
+			return true;
+		}
+		case NM_DedicatedServer:
+		{
+			return true;
+		}
+		case NM_Standalone:
+		{
+			return true;
+		}
+		default:
+		{
+			return false;
+		}
+	}
+}
+
+bool UNetSlime_Actor::IsOwningClient_Static(AActor* _actor)
+{
+	ENetMode networkInstance = _actor->GetWorld()->GetNetMode();
+
+	if (!_actor->HasNetOwner())
+	{
+		Log_Static(_actor, "Must have net owner in order to determine if owning client.");
+	}
+
+	const APlayerController* playerRef = nullptr;
+
+	if (! _actor->IsA(APlayerController::StaticClass()))
+	{
+		playerRef = _actor->GetOwner()->GetNetOwningPlayer()->GetPlayerController(_actor->GetWorld());
+	}
+	else
+	{
+		playerRef = Cast<APlayerController>(_actor);
+	}
+
+	ENetRole netRoleInstance   = ENetRole::ROLE_None;
+	ENetRole netRoleRemoteInst = ENetRole::ROLE_None;
+
+	if (playerRef != nullptr)
+	{
+		netRoleInstance   = playerRef->GetLocalRole ();
+		netRoleRemoteInst = playerRef->GetRemoteRole();
+	}
+	else
+	{
+		netRoleInstance   = _actor->GetLocalRole ();
+		netRoleRemoteInst = _actor->GetRemoteRole();
 	}
 
 	switch (networkInstance)
@@ -73,48 +142,12 @@ bool UNetSlime_Actor::ServerAuthorized_Static(AActor* _actor)
 			{
 				if (netRoleRemoteInst != ROLE_AutonomousProxy)
 				{
-					//UE_LOG(LogTemp, Warning, TEXT("Owning client check passed for listen server..."));
-
 					return true;
 				}
 				else
 				{
 					return false;
 				}
-
-			#if UE_EDITOR == true
-				// Carlos: listenserver showed up with simulatedproxy role on my end (regardless of single process on/off)
-				// DO NOT USE SINGLE PROCESS WHILE TESTING SINGLE INSTANCE.
-				//if (netRoleRemoteInst != ROLE_AutonomousProxy)
-				//{
-				//	//UE_LOG(LogTemp, Warning, TEXT("Owning client check passed for listen server..."));
-
-				//	_execRoute = EIsResult::Yes; 
-				//}
-				//else
-				//{
-				//	_execRoute = EIsResult::No;
-				//}
-
-			#endif
-
-				//On Oculus Quest its not equal, on editor its equal. TODO: (Note we don't know if its actually android or not...)
-			#if UE_GAME == true
-
-				if (netRoleRemoteInst != ROLE_AutonomousProxy)
-				{
-					//UE_LOG(LogTemp, Warning, TEXT("Owning client check passed for listen server..."));
-
-					_execRoute = EIsResult::Yes;
-				}
-				else
-				{
-					_execRoute = EIsResult::No;
-				}
-
-			#endif
-
-				return false;
 			}
 			else
 			{
@@ -123,7 +156,7 @@ bool UNetSlime_Actor::ServerAuthorized_Static(AActor* _actor)
 		}
 		case NM_Standalone:
 		{
-			return false;
+			return true;
 		}
 		default:
 		{
@@ -132,29 +165,20 @@ bool UNetSlime_Actor::ServerAuthorized_Static(AActor* _actor)
 	}
 }
 
-bool UNetSlime_Actor::IsOwningClient_Static(AActor* _actor)
+void UNetSlime_Actor::Log_Static(AActor* _context, FString _message)
 {
-	ENetMode networkInstance = _actor->GetWorld()->GetNetMode();
-
-	if (!_actor->HasNetOwner())
-	{
-		UE_LOG(LogTemp, Error, TEXT("Must have net owner in order to determine if owning client."));
-	}
-
-	UWorld* worldRef = _actor->GetWorld();
-
 	const AActor*            actorRef  = nullptr;
 	const APlayerController* playerRef = nullptr;
 
-	if (! _actor->IsA(APlayerController::StaticClass()))
+	if (! _context->IsA(APlayerController::StaticClass()))
 	{
-		actorRef  = _actor->GetOwner();
-		playerRef = _actor->GetOwner()->GetNetOwningPlayer()->GetPlayerController(worldRef);
+		actorRef  = _context->GetOwner();
+		playerRef = _context->GetOwner()->GetNetOwningPlayer()->GetPlayerController(actorRef->GetWorld());
 	}
 	else
 	{
-		actorRef  = _actor;
-		playerRef = Cast<APlayerController>(_actor);
+		actorRef  = _context;
+		playerRef = Cast<APlayerController>(_context);
 	}
 
 	ENetRole netRoleInstance   = ENetRole::ROLE_None;
@@ -171,235 +195,73 @@ bool UNetSlime_Actor::IsOwningClient_Static(AActor* _actor)
 		netRoleRemoteInst = actorRef->GetRemoteRole();
 	}
 
-	switch (networkInstance)
+	FString mode;
+
+	switch (UNetSlime_Static::NetworkMode(_context))
 	{
-		case NM_Client:
+		case ENetworkMode::Standalone:
 		{
-			if (netRoleInstance == ROLE_AutonomousProxy)
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
+			mode = TEXT("Standalone     ");
+
+			break;
 		}
-		case NM_ListenServer:
+		case ENetworkMode::ListenServer:
 		{
-			if (netRoleInstance == ROLE_Authority)
-			{
-				if (netRoleRemoteInst != ROLE_AutonomousProxy)
-				{
-					//UE_LOG(LogTemp, Warning, TEXT("Owning client check passed for listen server..."));
+			mode = TEXT("ListenServer   ");
 
-					return true;
-				}
-				else
-				{
-					return false;
-				}
-
-			#if UE_EDITOR == true
-				// Carlos: listenserver showed up with simulatedproxy role on my end (regardless of single process on/off)
-				// DO NOT USE SINGLE PROCESS WHILE TESTING SINGLE INSTANCE.
-				//if (netRoleRemoteInst != ROLE_AutonomousProxy)
-				//{
-				//	//UE_LOG(LogTemp, Warning, TEXT("Owning client check passed for listen server..."));
-
-				//	_execRoute = EIsResult::Yes; 
-				//}
-				//else
-				//{
-				//	_execRoute = EIsResult::No;
-				//}
-
-			#endif
-
-				//On Oculus Quest its not equal, on editor its equal. TODO: (Note we don't know if its actually android or not...)
-			#if UE_GAME == true
-
-				if (netRoleRemoteInst != ROLE_AutonomousProxy)
-				{
-					//UE_LOG(LogTemp, Warning, TEXT("Owning client check passed for listen server..."));
-
-					_execRoute = EIsResult::Yes;
-				}
-				else
-				{
-					_execRoute = EIsResult::No;
-				}
-
-			#endif
-
-				return false;
-			}
-			else
-			{
-				return false;
-			}
+			break;
 		}
-		case NM_Standalone:
+		case ENetworkMode::DedicatedServer:
 		{
-			return false;
+			mode = TEXT("DedicatedServer");
+
+			break;
 		}
-		default:
+		case ENetworkMode::Client:
 		{
-			return false;
+			mode = TEXT("Client         ");
+
+			break;
 		}
 	}
+
+	FString actorLevel;
+
+	if (IsOwningClient_Static(_context))
+	{
+		actorLevel = TEXT("Server Authorized");
+	}
+	else if (ServerAuthorized_Static(_context))
+	{
+		actorLevel = TEXT("Owning Client");
+	}
+	else
+	{
+		actorLevel = TEXT("No Authority");
+	}
+
+	_message = FString::Printf(TEXT("%-60s"), *_message);
+
+	SET_WARN_COLOR(COLOR_PURPLE)
+
+		UE_LOG(NetSlime, Log, TEXT("%s:  %s in [%s] Net Level: %s"), *mode, *_message, *_context->GetName(), *actorLevel);
+
+	CLEAR_WARN_COLOR()
 }
 
 bool UNetSlime_Actor::ServerAuthorized()
 {
-	ENetMode networkInstance = GetWorld()->GetNetMode();
-
-	switch (networkInstance)
-	{
-		case NM_Standalone:
-		{
-			return true;
-		}
-		case NM_DedicatedServer:
-		{
-			return true;
-		}
-		case NM_ListenServer:
-		{
-			return true;
-		}
-		case NM_Client:
-		{
-			AActor* actorCast = GetOwner();
-
-			ENetRole ownerRole = this->GetOwnerRole();
-
-			ENetRole netRoleInstance   = GetOwner()->GetLocalRole ();
-			ENetRole netRoleRemoteInst = GetOwner()->GetRemoteRole();
-
-			if (netRoleInstance == ROLE_AutonomousProxy)
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}
-		case NM_MAX:
-		{
-			return false;
-		}
-		default:
-		{
-			return false;
-		}
-	}
+	return ServerAuthorized_Static(this->GetOwner());
 }
 
 bool UNetSlime_Actor::IsOwningClient()
 {
-	ENetMode networkInstance = GetWorld()->GetNetMode();
+	return IsOwningClient_Static(this->GetOwner());
+}
 
-	if (!GetOwner()->HasNetOwner())
-	{
-		UE_LOG(LogTemp, Error, TEXT("Must have net owner in order to determine if owning client."));
-	}
-
-	UWorld* worldRef = GetWorld();
-
-	const AActor* actorRef             = GetOwner();
-	const APlayerController* playerRef = GetOwner()->GetNetOwningPlayer()->GetPlayerController(worldRef);
-
-	ENetRole netRoleInstance;
-	ENetRole netRoleRemoteInst;
-
-	if (playerRef != nullptr)
-	{
-		netRoleInstance = playerRef->GetLocalRole ();
-		netRoleRemoteInst = playerRef->GetRemoteRole();
-	}
-	else
-	{
-		netRoleInstance = actorRef->GetLocalRole ();
-		netRoleRemoteInst = actorRef->GetRemoteRole();
-	}
-
-	switch (networkInstance)
-	{
-		case NM_Client:
-		{
-			if (netRoleInstance == ROLE_AutonomousProxy)
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}
-		case NM_ListenServer:
-		{
-			if (netRoleInstance == ROLE_Authority)
-			{
-				if (netRoleRemoteInst != ROLE_AutonomousProxy)
-				{
-					//UE_LOG(LogTemp, Warning, TEXT("Owning client check passed for listen server..."));
-
-					return true;
-				}
-				else
-				{
-					return false;
-				}
-
-			#if UE_EDITOR == true
-				// Carlos: listenserver showed up with simulatedproxy role on my end (regardless of single process on/off)
-				// DO NOT USE SINGLE PROCESS WHILE TESTING SINGLE INSTANCE.
-				//if (netRoleRemoteInst != ROLE_AutonomousProxy)
-				//{
-				//	//UE_LOG(LogTemp, Warning, TEXT("Owning client check passed for listen server..."));
-
-				//	_execRoute = EIsResult::Yes; 
-				//}
-				//else
-				//{
-				//	_execRoute = EIsResult::No;
-				//}
-
-			#endif
-
-				//On Oculus Quest its not equal, on editor its equal. TODO: (Note we don't know if its actually android or not...)
-			#if UE_GAME == true
-
-				if (netRoleRemoteInst != ROLE_AutonomousProxy)
-				{
-					//UE_LOG(LogTemp, Warning, TEXT("Owning client check passed for listen server..."));
-
-					_execRoute = EIsResult::Yes;
-				}
-				else
-				{
-					_execRoute = EIsResult::No;
-				}
-
-			#endif
-
-				return false;
-			}
-			else
-			{
-				return false;
-			}
-		}
-		case NM_Standalone:
-		{
-			return false;
-		}
-		default:
-		{
-			return false;
-		}
-	}
+void UNetSlime_Actor::Log(FString _message)
+{
+	Log_Static(this->GetOwner(), _message);
 }
 
 void UNetSlime_Actor::K2_ServerAuthorized(EIsResult& _execRoute)

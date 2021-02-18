@@ -31,6 +31,7 @@ public:
 
 	INetSlime_Generate_Header();
 
+
 	UFUNCTION(Category = "Framework", BlueprintCallable, BlueprintPure, Meta = (DisplayName = "Local: Notify Component Ready"))
 	bool Local_IsFrameworkInitialized() const;
 
