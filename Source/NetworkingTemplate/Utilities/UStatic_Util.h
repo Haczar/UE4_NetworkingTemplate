@@ -1,14 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #pragma once
 
-// Includes
-
 // Unreal
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 
 // UHeader Tool
 #include "UStatic_Util.generated.h"
+
 
 
 // Enum
@@ -28,6 +27,7 @@ enum class EIsResult : uint8
 };
 
 
+
 /**
  *
  */
@@ -35,4 +35,7 @@ UCLASS(Blueprintable)
 class NETWORKINGTEMPLATE_API UStatic_Util : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
+
+public:
+
 };

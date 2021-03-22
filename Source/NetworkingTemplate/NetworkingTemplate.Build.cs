@@ -1,6 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+
+
 using UnrealBuildTool;
+
+
 
 public class NetworkingTemplate : ModuleRules
 {
@@ -9,15 +13,17 @@ public class NetworkingTemplate : ModuleRules
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
 		bEnableExceptions = true;
-	
+
+
+
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
+
 
 
         if (Target.Platform == UnrealTargetPlatform.Win64)
         {
             PublicDependencyModuleNames.AddRange
             (
-
                 new string[]
                 {
                     "Core"              ,
@@ -28,14 +34,14 @@ public class NetworkingTemplate : ModuleRules
                     "Slate"             ,
                     "SlateCore"         ,
                     "UMG"               ,
-
-			     // Added
-			      "AdvancedSessions"     ,
-				  "AdvancedSteamSessions",
+                    
+                    // Added
+                    "AdvancedSessions"     ,
+                    "AdvancedSteamSessions",
 				  //"VRExpansionPlugin"    ,
                   //"OpenVRExpansionPlugin",
-
-				 // Networking
+                  
+                  // Networking
 					"Networking"          ,
                     "OnlineSubsystem"     ,
 					"OnlineSubsystemNull" ,
@@ -46,42 +52,44 @@ public class NetworkingTemplate : ModuleRules
             );
         }
 
-            PublicIncludePaths.AddRange
-            (   
-                new string[]
-                {
-                 "NetworkingTemplate"                                         ,
-                 "NetworkingTemplate/Actors"                                  ,
-                 "NetworkingTemplate/Actors/Pawns"                            ,
-                 "NetworkingTemplate/Actors/Pawns/Characters"                 ,
-                 "NetworkingTemplate/Framework"                               ,
-                 "NetworkingTemplate/Networking"                              ,
-                 "NetworkingTemplate/Networking/NetSlime"                     ,
-                 "NetworkingTemplate/UserInterface"                           ,
-                 "NetworkingTemplate/Utilities"                                 ,
-                 "NetworkingTemplate/Utilities/Bitmask"                         ,
+		PublicIncludePaths.AddRange
+		(   
+			new string[]
+			{
+			 "NetworkingTemplate"                                         ,
+			 "NetworkingTemplate/Actors"                                  ,
+			 "NetworkingTemplate/Actors/Pawns"                            ,
+			 "NetworkingTemplate/Actors/Pawns/Characters"                 ,
+			 "NetworkingTemplate/Framework"                               ,
+			 "NetworkingTemplate/Networking"                              ,
+			 "NetworkingTemplate/Networking/NetSlime"                     ,
+			 "NetworkingTemplate/UserInterface"                           ,
+			 "NetworkingTemplate/Utilities"                                 ,
+			 "NetworkingTemplate/Utilities/Bitmask"                         ,
 
-			    // ... add public include paths required here ...
-		        }
-            );
+			// ... add public include paths required here ...
+			}
+		);
 
-            /* VR Required Modules */
-            //if (Target.Platform == UnrealTargetPlatform.Win64)
-            //{
-            //    PrivateDependencyModuleNames.AddRange(new string[] { "SteamVR", "SteamVRController" });
-            //}
-            //else
-            //{
-            //    PrivateDependencyModuleNames.AddRange(new string[] { });
-            //}
-        }
+		/* VR Required Modules */
+		//if (Target.Platform == UnrealTargetPlatform.Win64)
+		//{
+		//    PrivateDependencyModuleNames.AddRange(new string[] { "SteamVR", "SteamVRController" });
+		//}
+		//else
+		//{
+		//    PrivateDependencyModuleNames.AddRange(new string[] { });
+		//}
+	}
 
-		// Uncomment if you are using Slate UI
-		//PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
-		
-		// Uncomment if you are using online features.
-		//PrivateDependencyModuleNames.AddRange(new string[] { "OnlineSubsystem" });
 
-		// To include OnlineSubsystemSteam, add it to the plugins section in your uproject file with the Enabled attribute set to true
+
+	// Uncomment if you are using Slate UI
+	//PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
+	
+	// Uncomment if you are using online features.
+	//PrivateDependencyModuleNames.AddRange(new string[] { "OnlineSubsystem" });
+
+	// To include OnlineSubsystemSteam, add it to the plugins section in your uproject file with the Enabled attribute set to true
 }
 

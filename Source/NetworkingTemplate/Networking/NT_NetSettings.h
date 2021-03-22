@@ -4,14 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Engine/NetworkSettings.h"
-#include "NT_NetSettings.generated.h"
+//#include "NT_NetSettings.generated.h"
 
-/**
- * 
- */
-UCLASS(Blueprintable)
-class NETWORKINGTEMPLATE_API UNT_NetSettings : public UNetworkSettings
-{
-	GENERATED_BODY()
-	
-};
+///**
+// * 
+// */
+//UCLASS(Blueprintable)
+//class NETWORKINGTEMPLATE_API UNT_NetSettings : public UNetworkSettings
+//{
+//	GENERATED_BODY()
+//	
+//};

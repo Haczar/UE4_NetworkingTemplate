@@ -2,9 +2,14 @@
 
 #pragma once
 
+// Unreal
 #include "CoreMinimal.h"
 #include "GameFramework/GameNetworkManager.h"
+
+// UHT
 #include "NT_NetworkManager.generated.h"
+
+
 
 /**
  * 
