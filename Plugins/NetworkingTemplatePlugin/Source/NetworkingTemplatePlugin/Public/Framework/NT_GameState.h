@@ -18,7 +18,7 @@
  * 
  */
 UCLASS()
-class NETWORKINGTEMPLATE_API ANT_GameState : public AGameState, public INetSlime
+class NETWORKINGTEMPLATEPLUGIN_API ANT_GameState : public AGameState, public INetSlime
 {
 	GENERATED_BODY()
 	

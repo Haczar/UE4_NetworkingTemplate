@@ -4,10 +4,10 @@
 
 // Unreal
 #include "CoreMinimal.h"
-#include "GameNetworkManagerSettings.h"
+#include "GameFramework/GameNetworkManager.h"
 
 // UHT
-#include "NT_NetworkManagerSettings.generated.h"
+#include "NT_NetworkManager.generated.h"
 
 
 
@@ -15,7 +15,7 @@
  * 
  */
 UCLASS(Blueprintable)
-class NETWORKINGTEMPLATE_API UNT_NetworkManagerSettings : public UGameNetworkManagerSettings
+class NETWORKINGTEMPLATEPLUGIN_API ANT_NetworkManager : public AGameNetworkManager
 {
 	GENERATED_BODY()
 	

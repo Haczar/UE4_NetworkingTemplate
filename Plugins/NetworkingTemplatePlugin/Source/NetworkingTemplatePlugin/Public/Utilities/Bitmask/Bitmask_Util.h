@@ -15,7 +15,7 @@
 *
 */
 UCLASS(Blueprintable)
-class NETWORKINGTEMPLATE_API UBitmask_Util : public UStatic_Util
+class NETWORKINGTEMPLATEPLUGIN_API UBitmask_Util : public UStatic_Util
 {
 	GENERATED_BODY()
 

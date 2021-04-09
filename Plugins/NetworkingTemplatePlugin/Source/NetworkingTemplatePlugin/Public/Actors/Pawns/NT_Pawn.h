@@ -19,7 +19,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDelegate_PawnReady);
 
 
 UCLASS()
-class NETWORKINGTEMPLATE_API ANT_Pawn : public APawn, public INetSlime
+class NETWORKINGTEMPLATEPLUGIN_API ANT_Pawn : public APawn, public INetSlime
 {
 	GENERATED_BODY()
 

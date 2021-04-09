@@ -18,7 +18,7 @@
 
 
 UCLASS()
-class NETWORKINGTEMPLATE_API ANT_Character : public ACharacter, public INetSlime
+class NETWORKINGTEMPLATEPLUGIN_API ANT_Character : public ACharacter, public INetSlime
 {
 	GENERATED_BODY()
 

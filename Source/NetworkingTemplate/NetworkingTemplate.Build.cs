@@ -56,17 +56,7 @@ public class NetworkingTemplate : ModuleRules
 		(   
 			new string[]
 			{
-			 "NetworkingTemplate"                                         ,
-			 "NetworkingTemplate/Actors"                                  ,
-			 "NetworkingTemplate/Actors/Pawns"                            ,
-			 "NetworkingTemplate/Actors/Pawns/Characters"                 ,
-			 "NetworkingTemplate/Framework"                               ,
-			 "NetworkingTemplate/Networking"                              ,
-			 "NetworkingTemplate/Networking/NetSlime"                     ,
-			 "NetworkingTemplate/UserInterface"                           ,
-			 "NetworkingTemplate/Utilities"                                 ,
-			 "NetworkingTemplate/Utilities/Bitmask"                         ,
-
+			 "NetworkingTemplate",
 			// ... add public include paths required here ...
 			}
 		);

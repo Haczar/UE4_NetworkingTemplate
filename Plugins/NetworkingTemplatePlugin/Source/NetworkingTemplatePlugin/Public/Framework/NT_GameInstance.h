@@ -23,7 +23,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDelegate_FrameworkInitialized);
  * 
  */
 UCLASS()
-class NETWORKINGTEMPLATE_API UNT_GameInstance : public UGameInstance, public INetSlime
+class NETWORKINGTEMPLATEPLUGIN_API UNT_GameInstance : public UGameInstance, public INetSlime
 {
 	GENERATED_BODY()
 	

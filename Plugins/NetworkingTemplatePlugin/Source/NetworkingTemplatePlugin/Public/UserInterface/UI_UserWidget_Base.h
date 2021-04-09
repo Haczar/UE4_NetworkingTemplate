@@ -15,7 +15,7 @@
  * 
  */
 UCLASS()
-class NETWORKINGTEMPLATE_API UUI_UserWidget_Base : public UUserWidget
+class NETWORKINGTEMPLATEPLUGIN_API UUI_UserWidget_Base : public UUserWidget
 {
 	GENERATED_BODY()
 	

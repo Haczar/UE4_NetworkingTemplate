@@ -37,7 +37,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDelegate_PlayerReady);
  * 
  */
 UCLASS()
-class NETWORKINGTEMPLATE_API ANT_PlayerController : public APlayerController, public INetSlime
+class NETWORKINGTEMPLATEPLUGIN_API ANT_PlayerController : public APlayerController, public INetSlime
 {
 	GENERATED_BODY()
 

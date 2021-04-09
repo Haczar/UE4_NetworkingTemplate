@@ -63,7 +63,7 @@ enum class ENetworkMode : uint8
 
 
 
-NETWORKINGTEMPLATE_API DECLARE_LOG_CATEGORY_EXTERN(NetSlime, Log, All);
+NETWORKINGTEMPLATEPLUGIN_API DECLARE_LOG_CATEGORY_EXTERN(NetSlime, Log, All);
 
 
 
@@ -77,7 +77,7 @@ NETWORKINGTEMPLATE_API DECLARE_LOG_CATEGORY_EXTERN(NetSlime, Log, All);
  * For interface support add INetSlime to the class desired. 
  */
 UCLASS()
-class NETWORKINGTEMPLATE_API UNetSlime_Static : public UStatic_Util
+class NETWORKINGTEMPLATEPLUGIN_API UNetSlime_Static : public UStatic_Util
 {
 	GENERATED_BODY()
 
@@ -144,7 +144,7 @@ class UNetSlime : public UInterface
 	GENERATED_BODY()
 };
 
-class NETWORKINGTEMPLATE_API INetSlime
+class NETWORKINGTEMPLATEPLUGIN_API INetSlime
 {
 	GENERATED_BODY()
 

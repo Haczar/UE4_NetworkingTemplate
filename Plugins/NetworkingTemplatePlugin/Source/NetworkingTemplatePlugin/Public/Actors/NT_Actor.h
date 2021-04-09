@@ -6,28 +6,37 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 
-// UHeader Tool
-#include "UI_WidgetActorInterface_Base.generated.h"
+// NetSlime
+#include "NetSlime/NetSlime_Static.h"
+
+// UE Header Tool
+#include "NT_Actor.generated.h"
 
 
 
 UCLASS()
-class NETWORKINGTEMPLATE_API AUI_WidgetActorInterface_Base : public AActor
+class NETWORKINGTEMPLATEPLUGIN_API ANT_Actor : public AActor, public INetSlime
 {
 	GENERATED_BODY()
 	
 public:	
 
+	// Net Slime
+
+	INetSlime_Generate_Header();
+
+
 	// Sets default values for this actor's properties
-	AUI_WidgetActorInterface_Base();
+	ANT_Actor();
+
+
+	// AAActor
 
 protected:
-
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:	
-
 	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	virtual void Tick(float _deltaTime) override;
 };

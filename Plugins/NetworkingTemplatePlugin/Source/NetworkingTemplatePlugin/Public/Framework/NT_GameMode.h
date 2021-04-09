@@ -23,7 +23,7 @@ class APawn;
  * 
  */
 UCLASS()
-class NETWORKINGTEMPLATE_API ANT_GameMode : public AGameMode, public INetSlime	
+class NETWORKINGTEMPLATEPLUGIN_API ANT_GameMode : public AGameMode, public INetSlime	
 {
 	GENERATED_BODY()
 
