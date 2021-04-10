@@ -1,0 +1,3 @@
+[submodule "Plugins/VRExpansion"]
+	path = Plugins/VRExpansion
+	url = https://github.com/Ed94/VRExpansionPlugin
