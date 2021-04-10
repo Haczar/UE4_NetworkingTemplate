@@ -8,7 +8,7 @@
 
 // NT
 #include "NT_Framework.h"
-#include "NetSlime/NetSlime_Static.h"
+#include "NetSlime_Static.h"
 
 // UE Header Tool
 #include "NT_GameInstance.generated.h"

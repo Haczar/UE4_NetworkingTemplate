@@ -6,8 +6,8 @@
 #include "CoreMinimal.h"
 #include "Logging/LogMacros.h"
 
-// NT
-#include "Utilities/UStatic_Util.h"
+// Static Utilities
+#include "Static_Utils.h"
 
 // UE Header Tool
 #include "NetSlime_Static.generated.h"
@@ -63,7 +63,7 @@ enum class ENetworkMode : uint8
 
 
 
-NETWORKINGTEMPLATEPLUGIN_API DECLARE_LOG_CATEGORY_EXTERN(NetSlime, Log, All);
+NETSLIME_API DECLARE_LOG_CATEGORY_EXTERN(NetSlime, Log, All);
 
 
 
@@ -77,7 +77,7 @@ NETWORKINGTEMPLATEPLUGIN_API DECLARE_LOG_CATEGORY_EXTERN(NetSlime, Log, All);
  * For interface support add INetSlime to the class desired. 
  */
 UCLASS()
-class NETWORKINGTEMPLATEPLUGIN_API UNetSlime_Static : public UStatic_Util
+class NETSLIME_API UNetSlime_Static : public UStatic_Utils
 {
 	GENERATED_BODY()
 
@@ -144,7 +144,7 @@ class UNetSlime : public UInterface
 	GENERATED_BODY()
 };
 
-class NETWORKINGTEMPLATEPLUGIN_API INetSlime
+class NETSLIME_API INetSlime
 {
 	GENERATED_BODY()
 

@@ -7,7 +7,7 @@
 #include "GameFramework/Character.h"
 
 // NetSlime
-#include "NetSlime/NetSlime_Static.h"
+#include "NetSlime_Static.h"
 
 // NT
 #include "Pawns/NT_Pawn.h"

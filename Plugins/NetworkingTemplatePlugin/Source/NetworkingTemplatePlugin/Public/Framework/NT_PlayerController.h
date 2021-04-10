@@ -5,14 +5,14 @@
 // Unreal
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "UStatic_Util.h"
+#include "Static_Utils.h"
 
 // NT
 #include "NT_PlayerState.h"
 
 
 // NetSlime
-#include "NetSlime/NetSlime_Static.h"
+#include "NetSlime_Static.h"
 
 // UE Header Tool
 #include "NT_PlayerController.generated.h"

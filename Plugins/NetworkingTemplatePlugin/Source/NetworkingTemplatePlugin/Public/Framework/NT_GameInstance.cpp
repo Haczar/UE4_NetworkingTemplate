@@ -6,7 +6,7 @@
 // Unreal
 //#include "GameplayStatics.h"
 #include <Runtime/Engine/Classes/Kismet/GameplayStatics.h>
-#include "Bitmask/Bitmask_Util.h"
+#include "Bitmask_Util.h"
 #include "NT_PlayerController.h"
 
 

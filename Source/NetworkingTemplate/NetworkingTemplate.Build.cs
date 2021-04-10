@@ -38,6 +38,9 @@ public class NetworkingTemplate : ModuleRules
                     // Added
                     "AdvancedSessions"     ,
                     "AdvancedSteamSessions",
+					"NetSlime",
+					"NetworkingTemplatePlugin",
+					"StaticUtils",
 				  //"VRExpansionPlugin"    ,
                   //"OpenVRExpansionPlugin",
                   

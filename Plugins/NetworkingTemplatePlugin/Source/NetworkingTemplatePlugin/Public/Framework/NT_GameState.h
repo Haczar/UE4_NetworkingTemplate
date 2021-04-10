@@ -7,7 +7,7 @@
 #include "GameFramework/GameState.h"
 
 // NetSlime
-#include "NetSlime/NetSlime_Static.h"
+#include "NetSlime_Static.h"
 
 // UE Header Tool
 #include "NT_GameState.generated.h"

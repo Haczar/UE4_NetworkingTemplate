@@ -2,7 +2,7 @@
 	"FileVersion": 3,
 	"Version": 1,
 	"VersionName": "1.0",
-	"FriendlyName": "NetworkingTemplatePlugin",
+	"FriendlyName": "NetSlime",
 	"Description": "",
 	"Category": "Other",
 	"CreatedBy": "",
@@ -11,33 +11,17 @@
 	"MarketplaceURL": "",
 	"SupportURL": "",
 	"CanContainContent": true,
-	"IsBetaVersion": false,
+	"IsBetaVersion": true,
 	"IsExperimentalVersion": false,
 	"Installed": false,
 	"Modules": [
 		{
-			"Name": "NetworkingTemplatePlugin",
+			"Name": "NetSlime",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
 		}
 	],
 	"Plugins": [
-		{
-			"Name": "AdvancedSessions",
-			"Enabled": true
-		},
-		{
-			"Name": "AdvancedSteamSessions",
-			"Enabled": true
-		},
-		{
-			"Name": "NetSlime",
-			"Enabled": true
-		},
-		{
-			"Name": "OnlineSubsystemNull",
-			"Enabled": true
-		},
 		{
 			"Name": "StaticUtils",
 			"Enabled": true

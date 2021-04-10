@@ -17,16 +17,17 @@ public class NetworkingTemplatePlugin : ModuleRules
 		PublicIncludePaths.AddRange(
 			new string[]
 			{
-			 "NetworkingTemplatePlugin"                                         ,
-			 "NetworkingTemplatePlugin/Actors"                                  ,
-			 "NetworkingTemplatePlugin/Actors/Pawns"                            ,
-			 "NetworkingTemplatePlugin/Actors/Pawns/Characters"                 ,
-			 "NetworkingTemplatePlugin/Framework"                               ,
-			 "NetworkingTemplatePlugin/Networking"                              ,
-			 "NetworkingTemplatePlugin/Networking/NetSlime"                     ,
-			 "NetworkingTemplatePlugin/UserInterface"                           ,
-			 "NetworkingTemplatePlugin/Utilities"                                 ,
-			 "NetworkingTemplatePlugin/Utilities/Bitmask"                         ,
+			 //"NetworkingTemplatePlugin"                                         ,
+			 //"NetworkingTemplatePlugin/Public"                                  ,
+			 //"NetworkingTemplatePlugin/Public/Actors"                                  ,
+			 //"NetworkingTemplatePlugin/Public/Actors/Pawns"                            ,
+			 //"NetworkingTemplatePlugin/Public/Actors/Pawns/Characters"                 ,
+			 //"NetworkingTemplatePlugin/Public/Framework"                               ,
+			 //"NetworkingTemplatePlugin/Public/Networking"                              ,
+			 //"NetworkingTemplatePlugin/Public/Networking/NetSlime"                     ,
+			 //"NetworkingTemplatePlugin/Public/UserInterface"                           ,
+			 //"NetworkingTemplatePlugin/Public/Utilities"                                 ,
+			 //"NetworkingTemplatePlugin/Public/Utilities/Bitmask"                         ,
 			// ... add public include paths required here ...
 			}
 		);
@@ -56,6 +57,8 @@ public class NetworkingTemplatePlugin : ModuleRules
 				// Added
                 "AdvancedSessions"     ,
 				"AdvancedSteamSessions",
+				"NetSlime",
+				"StaticUtils",
 
 				// Networking
 				"Networking"          ,

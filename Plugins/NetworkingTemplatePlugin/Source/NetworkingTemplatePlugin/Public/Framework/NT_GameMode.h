@@ -7,7 +7,7 @@
 #include "GameFramework/GameMode.h"
 
 // NT 
-#include "NetSlime/NetSlime_Static.h"
+#include "NetSlime_Static.h"
 
 
 // UE Header Tool

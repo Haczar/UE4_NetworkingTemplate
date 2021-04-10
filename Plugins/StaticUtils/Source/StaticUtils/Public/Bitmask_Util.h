@@ -4,7 +4,7 @@
 #include "CoreMinimal.h"
 
 // NT
-#include "Utilities/UStatic_Util.h"
+#include "Static_Utils.h"
 
 // UHeader Tool
 #include "Bitmask_Util.generated.h"
@@ -15,7 +15,7 @@
 *
 */
 UCLASS(Blueprintable)
-class NETWORKINGTEMPLATEPLUGIN_API UBitmask_Util : public UStatic_Util
+class STATICUTILS_API UBitmask_Util : public UStatic_Utils
 {
 	GENERATED_BODY()
 
